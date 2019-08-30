@@ -262,7 +262,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     public void run() {
         if (this.ID == 0) { //ID==0时，这是网络的第一个加入的节点的构造部分
            
-            System.out.println("Building Finger table ... ");
+            System.out.println("正在创建路由表 ... ");
             //构造路由表的index列
             for (int i = 1; i <= m; i++) {
                 finger[i] = new FingerTable();
@@ -277,10 +277,11 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             for (int i = 1; i <= m; i++) {
                     finger[i].setSuccessor(me);
             }
-            System.out.println("finger is established, current node is the only node in the Net");
+            System.out.println("路由表创建完成，此节点是网络中唯一节点！");
             
             try {
 				buildNodeList();
+				System.out.println("nodeList创建完成");
 			} catch (Exception e1) {}
             
             try { 
@@ -289,7 +290,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         }       
         else if (this.ID == -1) {//ID==1时，这是网络非第一个加入的节点的构造部分
 
-            System.out.println("Building Finger table ... ");
+            System.out.println("正在创建路由表 ...");
             for (int i = 1; i <= m; i++) {
                 finger[i] = new FingerTable();
                 finger[i].setStart((me.getID() + (int)Math.pow(2,i-1)) % numDHT);
@@ -324,14 +325,14 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                 BufferedReader inFromClient =new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 DataOutputStream outToClient = new DataOutputStream(connection.getOutputStream());
                 System.out.println();
-                System.out.println( "*** A request came, Service begins....*** ");
+                System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
                 
                 String received = inFromClient.readLine();
                 String response = considerInput(received);
 
                 outToClient.writeBytes(response + "\n");	
             } catch (Exception e) {
-                System.out.println("Thread cannot serve connection");
+                System.out.println("线程无法服务连接");
             }
 
         }
