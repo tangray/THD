@@ -100,7 +100,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             //查找新加入节点的前继通过已知的节点的路由表
             String result=makeConnection(knownhostIP, knownhostport, "findPred/"+initInfo);
             String[] tokens = result.split("/");
-            pred = new Node(Integer.parseInt(tokens[1]),tokens[2],tokens[3]);
+            pred = new Node(Integer.parseInt(tokens[0]),tokens[1],tokens[2]);
             System.out.println("My given Node ID is: "+me.getID() + ". Predecessor ID: " +pred.getID());
             //启动DHT线程，传入参数为1,负责构造路由表信息
             Socket temp = null;
