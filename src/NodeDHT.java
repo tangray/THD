@@ -25,6 +25,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     private static FingerTable[] finger;    
     private static String knownhostIP;
     private static String knownhostport;
+    private static String myIP;
     private static String myport;
     private static HashSet<Node> nodeList = new HashSet<Node>();
     private static List<Word> wordList = new ArrayList<Word>();
@@ -48,12 +49,13 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             finger = new FingerTable[m+1];
             numDHT = (int)Math.pow(2,m);
          
-            InetAddress myIP = InetAddress.getLocalHost();
-            System.out.println("本节点 IP地址:：" + myIP.getHostAddress() + "\n");
+            InetAddress mIP = InetAddress.getLocalHost();
+            myIP=mIP.getHostAddress();
+            System.out.println("本节点 IP地址:：" + myIP + "\n");
 
-            int initInfo = getFisrtNodeInfo(myIP.getHostAddress(),myport);//只返回一个字段即NodeID
+            int initInfo = getFisrtNodeInfo(myIP,myport);//只返回一个字段即NodeID
             //构造当前节点的node类并存储
-            me = new Node(initInfo,myIP.getHostAddress(),myport);
+            me = new Node(initInfo,myIP,myport);
 
             pred=me;
             System.out.println("节点ID ： "+me.getID() + ". 前继节点ID ： " +pred.getID());
@@ -92,12 +94,13 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             finger = new FingerTable[m+1];
             numDHT = (int)Math.pow(2,m);
              
-            InetAddress myIP = InetAddress.getLocalHost();
-            System.out.println("本节点IP地址 : " + myIP.getHostAddress() + "\n");
+            InetAddress mIP = InetAddress.getLocalHost();
+            myIP=mIP.getHostAddress(); 
+            System.out.println("本节点IP地址 : " + myIP + "\n");
 
-            int initInfo = getNodeInfo(myIP.getHostAddress(),myport);//只返回一个字段即NodeID
+            int initInfo = getNodeInfo(myIP,myport);//只返回一个字段即NodeID
             //构造当前节点的node类并存储
-            me = new Node(initInfo,myIP.getHostAddress(),myport);
+            me = new Node(initInfo,myIP,myport);
 
             //查找新加入节点的前继通过已知的节点的路由表
             String result=makeConnection(knownhostIP, knownhostport, "findPred/"+initInfo);
@@ -241,21 +244,25 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
 
     public static String makeConnection(String ip, String port, String message) throws Exception {
         //System.out.println("Making connection to " + ip + " at " +port + " to " + message);
+            if(myIP.equals(ip) && myport.equals(port)) {
+            	String response = considerInput(message);
+                return response;
+            }
+            else {
+            	 Socket sendingSocket = new Socket(ip,Integer.parseInt(port));
+                 DataOutputStream out = new DataOutputStream(sendingSocket.getOutputStream());
+                 BufferedReader inFromServer = new BufferedReader(new InputStreamReader(sendingSocket.getInputStream()));
 
-            Socket sendingSocket = new Socket(ip,Integer.parseInt(port));
-            DataOutputStream out = new DataOutputStream(sendingSocket.getOutputStream());
-            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(sendingSocket.getInputStream()));
+                 //System.out.println("Sending request: " + message + " to " + ip + " at " + port);
+                 out.writeBytes(message + "\n");
 
-            //System.out.println("Sending request: " + message + " to " + ip + " at " + port);
-            out.writeBytes(message + "\n");
-
-            String result = inFromServer.readLine();
-            //System.out.println("From Server: " + result);
-            out.close();
-            inFromServer.close();
-            sendingSocket.close(); 
-            return result;
-     
+                 String result = inFromServer.readLine();
+                 //System.out.println("From Server: " + result);
+                 out.close();
+                 inFromServer.close();
+                 sendingSocket.close(); 
+                 return result;
+            }   
     }
 
 
