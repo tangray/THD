@@ -78,8 +78,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                    Socket newCon = serverSocket.accept();
                    Runnable runnable2 = new NodeDHT(newCon,count++);
                    Thread t = new Thread(runnable2);
-               	   System.out.println();
-                   System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
+               	   //System.out.println();
+                   //System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
                    t.start();
             }
         }     
@@ -658,15 +658,17 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     //新增：更新nodeList
     public static void updateList(Node node) throws Exception {
     	nodeList.add(node);
+    	printNodeInfo();
     }
     //新增：更新其它节点的nodeList
     public static void updateOthersList() throws Exception {
     	Iterator<Node> iterator = nodeList.iterator();
+    	String string=null;
     	while(iterator.hasNext()) {
     		Node node =iterator.next();
     		if(node==me)
     			continue;
-    		String string = makeConnection(node.getIP(),node.getPort(),"updateList/"+node.getID()+"/"+node.getIP()+"/"+node.getPort());
+    	    string = makeConnection(node.getIP(),node.getPort(),"updateList/"+node.getID()+"/"+node.getIP()+"/"+node.getPort());
     	}
     }
     //新增：节点生成nodeList
