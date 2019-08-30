@@ -313,6 +313,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                     System.out.println("nodeList创建完成");
                     updateOthersList();
                     System.out.println("其它节点nodeList已更新");
+                    noticeOthers("printNum/");
             } catch (Exception e) {}
             
             try { 
@@ -365,6 +366,10 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             int id=Integer.parseInt(tokens[1]);
             Node newNode = find_predecessor(id);
             outResponse = newNode.getID() + "/" + newNode.getIP() + "/" + newNode.getPort() ;
+        }
+        //新添加
+        else if (tokens[0].equals("printNum")) {
+        	printNum();
         }
         //新添加
         else if (tokens[0].equals("findSucOfPred")) {
@@ -714,5 +719,19 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     	String result = null;
     	result =finger[m].getSuccessor().getID()+finger[m].getSuccessor().getIP()+finger[m].getSuccessor().getPort();
     	return result;
+    }
+    //新增：广播消息
+    public static void noticeOthers(String message) throws Exception{
+    	Iterator<Node> iterator = nodeList.iterator();
+    	while(iterator.hasNext()) {
+    		Node node =iterator.next();
+    		if(node==me)
+    			continue;
+    		String string = makeConnection(node.getIP(),node.getPort(),message);
+    	}
+    }
+    //新增：打印节点个数
+    public static void printNum(){
+    	System.out.println("当前节点个数 ："+nodeList.size()+"个");
     }
 }
