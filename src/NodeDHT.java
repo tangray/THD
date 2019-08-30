@@ -78,6 +78,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                    Socket newCon = serverSocket.accept();
                    Runnable runnable2 = new NodeDHT(newCon,count++);
                    Thread t = new Thread(runnable2);
+               	   System.out.println();
+                   System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
                    t.start();
             }
         }     
@@ -319,8 +321,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         }
         else {//ID等于其他值时，进行的是信息交互的部分
             try {
-            	System.out.println();
-                System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
                 BufferedReader inFromClient =new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 DataOutputStream outToClient = new DataOutputStream(connection.getOutputStream());
                 
