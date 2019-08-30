@@ -26,7 +26,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     private static String knownhostIP;
     private static String knownhostport;
     private static String myport;
-    private static List<Node> nodeList = new ArrayList<Node>();
+    private static ArrayList<Node> nodeList = new ArrayList<Node>();
     private static List<Word> wordList = new ArrayList<Word>();
 
     public NodeDHT(Socket s, int i) {
@@ -278,6 +278,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                     finger[i].setSuccessor(me);
             }
             System.out.println("finger is established, current node is the only node in the Net");
+            
             try {
 				buildNodeList();
 			} catch (Exception e1) {}
@@ -660,21 +661,22 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     }
     //新增：节点生成nodeList
     public static void buildNodeList() throws Exception{
-    	ArrayList<Node> list=null;
-    	addLocalNode(list);//先添加自己路由表中的Node(这时候肯定不包含自己)
+    	//ArrayList<Node> list=null;
+    	addLocalNode(nodeList);//先添加自己路由表中的Node(这时候肯定不包含自己)
     	Node current=new Node(finger[m].getSuccessor().getID(),finger[m].getSuccessor().getIP(), finger[m].getSuccessor().getPort());
     	while(!nodeList.contains(me)) {//包含自己的时候说明套圈了！所有节点肯定包含在内了
-    		list.addAll(getNode(makeConnection(current.getIP(),current.getPort(), "addLocalNode")));
+    		//获取路由表最后一项的路由表信息
+    		nodeList.addAll(getNode(makeConnection(current.getIP(),current.getPort(), "addLocalNode")));
+    		//更新current
     		String str=makeConnection(current.getIP(), current.getPort(), "remoteNode");
     		String[] tokens = str.split("/");
     		current=new Node(Integer.parseInt(tokens[0]),tokens[1],tokens[2]);
     	}
     	//去重,当节点少的时候，例如建立之初，路由表中的后继节点肯定存在重复，所以需要去重！
     	LinkedHashSet<Node> lhs = new LinkedHashSet<Node>();
-		lhs.addAll(list);
-		list.clear();
-		list.addAll(lhs);
-        nodeList.addAll(list);
+		lhs.addAll(nodeList);
+		nodeList.clear();
+		nodeList.addAll(lhs);
     }
     //新增：处理返回的m个node信息并生成arraylist(路由表中最多只有m个node)
     public static ArrayList<Node> getNode(String str) {
