@@ -64,7 +64,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             thread.start();
             //监听端口，等待其他节点或者客户端的请求
             int count = 1;
-            System.out.println("正在等待其它节点请求...");
+            //System.out.println("正在等待其它节点请求...");
             int port = Integer.parseInt(args[0]);
 
             try {
@@ -156,14 +156,12 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     }
     
     public static int getFisrtNodeInfo(String nodeIP, String nodePort) throws Exception{
-        //生成NID
         if (busy == 0) {
               synchronized (object) {
                  busy = 1;
         }
         int nodeID = 0;
         int initInfo =0;
-        //System.out.println("*** Node Initation Call: Connection from " + nodeIP);
         try{ 
             MessageDigest md = MessageDigest.getInstance("SHA1");
             md.reset();
@@ -171,14 +169,10 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             md.update(hashString.getBytes());
             byte[] hashBytes = md.digest();
             BigInteger hashNum = new BigInteger(1,hashBytes);
-
+            
             nodeID = Math.abs(hashNum.intValue()) % numDHT;
-            System.out.println("节点 ID已生成： " + nodeID);
-
-            System.out.println("第一个节点已经加入 ... ");
-
+            
             initInfo = nodeID;
-
         } catch (NoSuchAlgorithmException nsae){}
 
 
