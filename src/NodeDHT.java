@@ -282,6 +282,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             try {
 				buildNodeList();
 				System.out.println("nodeList创建完成");
+				printNum();
+				printNodeInfo();
 			} catch (Exception e1) {}
             
             try { 
@@ -314,6 +316,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                     updateOthersList();
                     System.out.println("其它节点nodeList已更新");
                     noticeOthers("printNum/");
+                    noticeOthers("printNodeInfo/");
             } catch (Exception e) {}
             
             try { 
@@ -370,6 +373,10 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         //新添加
         else if (tokens[0].equals("printNum")) {
         	printNum();
+        }
+        //新添加
+        else if (tokens[0].equals("printNodeInfo")) {
+        	printNodeInfo();
         }
         //新添加
         else if (tokens[0].equals("findSucOfPred")) {
@@ -733,5 +740,17 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     //新增：打印节点个数
     public static void printNum(){
     	System.out.println("当前节点个数 ："+nodeList.size()+"个");
+    }
+    //新增：打印节点信息
+    public static void printNodeInfo() throws Exception{
+    	Iterator<Node> iterator = nodeList.iterator();
+    	String string="";
+    	while(iterator.hasNext()) {
+    		Node node =iterator.next();
+    		if(node==me)
+    			continue;
+    		string="节点ID:"+node.getID()+"  IP地址："+node.getIP()+"  端口号： "+node.getPort()+" ";
+    		System.out.println(string);
+    	}
     }
 }
