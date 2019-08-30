@@ -26,7 +26,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     private static String knownhostIP;
     private static String knownhostport;
     private static String myport;
-    private static ArrayList<Node> nodeList = new ArrayList<Node>();
+    private static HashSet<Node> nodeList = new HashSet<Node>();
     private static List<Word> wordList = new ArrayList<Word>();
 
     public NodeDHT(Socket s, int i) {
@@ -672,29 +672,24 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     	addLocalNode(nodeList);
     	Node current=new Node(finger[m].getSuccessor().getID(),finger[m].getSuccessor().getIP(), finger[m].getSuccessor().getPort());
     	while(!nodeList.contains(me)) {
-    		nodeList.addAll(getNode(makeConnection(current.getIP(),current.getPort(), "addLocalNode")));
+    		getNode(makeConnection(current.getIP(),current.getPort(), "addLocalNode"));
     		String str=makeConnection(current.getIP(), current.getPort(), "remoteNode");
     		String[] tokens = str.split("/");
     		current=new Node(Integer.parseInt(tokens[0]),tokens[1],tokens[2]);
     	}
-    	LinkedHashSet<Node> lhs = new LinkedHashSet<Node>();
-		lhs.addAll(nodeList);
-		nodeList.clear();
-		nodeList.addAll(lhs);
     }
     //新增：处理返回的m个node信息并生成arraylist(路由表中最多只有m个node)
-    public static ArrayList<Node> getNode(String str) {
-    	 ArrayList<Node> list=new ArrayList<Node>(); 
+    public static void getNode(String str) {
+    	// HashSet<Node> list=new HashSet<Node>(); 
     	 String[] tokens = str.split("/");
     	 Node newNode=null;
     	 for(int i=1;i<=m;i++) {
     	      newNode=new Node(Integer.parseInt(tokens[0+3*(i-1)]),tokens[1+3*(i-1)],tokens[2+3*(i-1)]);
-    	      list.add(newNode);
+    	      nodeList.add(newNode);
     	 }
-    	 return list;
     }
     //新增：将本节点的路由表信息中的节点信息加入nodeList    
-    public static void addLocalNode(ArrayList<Node> list){
+    public static void addLocalNode(HashSet<Node> list){
     	for(int i=1;i<=m;i++){
             list.add(finger[i].getSuccessor());
          }
