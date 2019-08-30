@@ -308,17 +308,19 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                     init_finger_table(pred);//初始化路由表，即是新加入节点发现其他节点的过程
                     System.out.println("路由表已初始化.....");
                     update_others();//更新其他节点的路由，即是新加入节点被发现的过程
-                    System.out.println("其它节点路由表已更新");
+                    System.out.println("其它节点路由表已更新");//
                     buildNodeList();
                     System.out.println("nodeList创建完成");
                     updateOthersList();
                     System.out.println("其它节点nodeList已更新");
                     noticeOthers("printNum/");
                     noticeOthers("printNodeInfo/");
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            	e.printStackTrace();
+            }
             
             try { 
-                    finishJoining(me.getID());
+                    finishJoining(me.getID());//
             } catch (Exception e) {}
         }
         else {//ID等于其他值时，进行的是信息交互的部分
@@ -531,6 +533,9 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                 id = id + numDHT; 
 
             p = find_predecessor(id);
+            
+//            System.out.print("id:"+id+" ; ");
+//            System.out.println("p:"+p);
 
 
             String request = "updateFing/" + me.getID() + "/" + me.getIP() + "/" + me.getPort() + "/" + i;  
@@ -673,7 +678,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     }
     //新增：节点生成nodeList
     public static void buildNodeList() throws Exception{
-    	addLocalNode(nodeList);
+    	addLocalNode();
     	Node current=new Node(finger[m].getSuccessor().getID(),finger[m].getSuccessor().getIP(), finger[m].getSuccessor().getPort());
     	while(!nodeList.contains(me)) {
     		getNode(makeConnection(current.getIP(),current.getPort(), "addLocalNode"));
@@ -693,9 +698,9 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     	 }
     }
     //新增：将本节点的路由表信息中的节点信息加入nodeList    
-    public static void addLocalNode(HashSet<Node> list){
+    public static void addLocalNode(){
     	for(int i=1;i<=m;i++){
-            list.add(finger[i].getSuccessor());
+            nodeList.add(finger[i].getSuccessor());
          }
     }
     //新增：提供本节点的路由表中的节点信息给其它节点
