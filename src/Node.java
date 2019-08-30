@@ -2,7 +2,19 @@ public class Node {
 	private int myID;
 	private String myIP;
 	private String myPort;
-
+    @Override
+	public int hashCode() {
+		return 3*myID+4*myIP.hashCode()+5*myPort.hashCode();
+	}
+    @Override
+    public boolean equals(Object obj) {
+    	Node node=null;
+    	if(obj instanceof Node)
+    		node=(Node)obj;
+    	if(node.getID()==myID&&node.getIP()==myIP&&node.getPort()==myPort)
+    		return true;
+    	else return false;
+    }
 	public void setID (int id) {
 		this.myID = id;
 	}
@@ -27,4 +39,3 @@ public class Node {
 		myPort = port;
 	}
 }
-
