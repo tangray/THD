@@ -683,8 +683,13 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     	    string = makeConnection(node.getIP(),node.getPort(),"updateList/"+me.getID()+"/"+me.getIP()+"/"+me.getPort());
     	}
     }
-    //新增：节点生成nodeList
     public static void buildNodeList() throws Exception{
+    	nodeList.add(me);
+    	String str = makeConnection(knownhostIP, knownhostport, "load/");
+    	getNode(str);
+    }
+    //新增：节点生成nodeList
+    /*public static void buildNodeList() throws Exception{
     	addLocalNode();
     	Node current=new Node(finger[m].getSuccessor().getID(),finger[m].getSuccessor().getIP(), finger[m].getSuccessor().getPort());
     	while(!nodeList.contains(me)) {
@@ -694,25 +699,35 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     		current=new Node(Integer.parseInt(tokens[0]),tokens[1],tokens[2]);
     	}
     	System.out.println("执行到此----");
-    }
+    }*/
     //新增：处理返回的m个node信息并生成arraylist(路由表中最多只有m个node)
     public static void getNode(String str) {
     	// HashSet<Node> list=new HashSet<Node>(); 
     	 String[] tokens = str.split("/");
     	 Node newNode=null;
-    	 for(int i=1;i<=m;i++) {
+    	 for(int i=1;i<=(tokens.length/3);i++) {
     	      newNode=new Node(Integer.parseInt(tokens[0+3*(i-1)]),tokens[1+3*(i-1)],tokens[2+3*(i-1)]);
     	      nodeList.add(newNode);
     	 }
     }
     //新增：将本节点的路由表信息中的节点信息加入nodeList    
-    public static void addLocalNode(){
+    /*public static void addLocalNode(){
     	for(int i=1;i<=m;i++){
             nodeList.add(finger[i].getSuccessor());
          }
+    }*/
+    public static String loadNode(){
+	     Node node =null;
+	     String results="";
+	     Iterator<Node> iterator = nodeList.iterator();
+	     while(iterator.hasNext()) {
+	    	node =iterator.next();
+	    	results=results+node.getID() + "/" + node.getIP() + "/" + node.getPort();
+	     }     
+	     return results;
     }
     //新增：提供本节点的路由表中的节点信息给其它节点
-    public static String loadNode(){
+    /*public static String loadNode(){
     	Node newNode =null;
     	String results="";
     	for(int i=1;i<m;i++) {
@@ -722,13 +737,13 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     	newNode=finger[m].getSuccessor();
     	results=results+newNode.getID() + "/" + newNode.getIP() + "/" + newNode.getPort();
     	return results;
-    }
+    }*/
     //新增：返回路由表中最远的节点
-    public static String remoteNode(){
+   /* public static String remoteNode(){
     	String result = null;
     	result =finger[m].getSuccessor().getID()+"/"+finger[m].getSuccessor().getIP()+"/"+finger[m].getSuccessor().getPort();
     	return result;
-    }
+    }*/
     //新增：广播消息
     public static void noticeOthers(String message) throws Exception{
     	Iterator<Node> iterator = nodeList.iterator();
