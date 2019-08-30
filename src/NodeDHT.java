@@ -76,8 +76,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             
             while (true) {
                    Socket newCon = serverSocket.accept();
-                   System.out.println();
-                   System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
                    Runnable runnable2 = new NodeDHT(newCon,count++);
                    Thread t = new Thread(runnable2);
                    t.start();
@@ -123,8 +121,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             
             while (true) {
                    Socket newCon = serverSocket.accept();
-                   System.out.println();
-                   System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
                    Runnable runnable2 = new NodeDHT(newCon,count++);
                    Thread t = new Thread(runnable2);
                    t.start();
@@ -329,6 +325,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         }
         else {//ID等于其他值时，进行的是信息交互的部分
             try {
+            	System.out.println();
+                System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
                 BufferedReader inFromClient =new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 DataOutputStream outToClient = new DataOutputStream(connection.getOutputStream());
                 
@@ -480,7 +478,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
 
         String request = "findSuc/" + finger[1].getStart();
         String result = makeConnection(n.getIP(),n.getPort(),request);
-        System.out.println("Asking node " + n.getID() + " at " + n.getIP());
+        //System.out.println("Asking node " + n.getID() + " at " + n.getIP());
 
         String[] tokens = result.split("/");
         finger[1].setSuccessor(new Node(Integer.parseInt(tokens[0]),tokens[1],tokens[2]));
@@ -585,7 +583,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     //通过当前节点的路由表查询某个NID的后继节点
     public static Node find_successor(int id) throws Exception //RemoteException,
            {
-               System.out.println("Visiting here at Node <" + me.getID()+"> to find successor of key ("+ id +")"); 
+               //System.out.println("Visiting here at Node <" + me.getID()+"> to find successor of key ("+ id +")"); 
 
                Node n;
                n = find_predecessor(id);
