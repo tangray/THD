@@ -686,7 +686,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     //新增：节点生成nodeList
     public static void buildNodeList() throws Exception{
     	addLocalNode();
-    	System.out.println("执行到此----");
     	Node current=new Node(finger[m].getSuccessor().getID(),finger[m].getSuccessor().getIP(), finger[m].getSuccessor().getPort());
     	while(!nodeList.contains(me)) {
     		getNode(makeConnection(current.getIP(),current.getPort(), "addLocalNode/"));
@@ -694,6 +693,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     		String[] tokens = str.split("/");
     		current=new Node(Integer.parseInt(tokens[0]),tokens[1],tokens[2]);
     	}
+    	System.out.println("执行到此----");
     }
     //新增：处理返回的m个node信息并生成arraylist(路由表中最多只有m个node)
     public static void getNode(String str) {
