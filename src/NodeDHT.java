@@ -54,7 +54,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             int initInfo = getFisrtNodeInfo(myIP.getHostAddress(),myport);//只返回一个字段即NodeID
             //构造当前节点的node类并存储
             me = new Node(initInfo,myIP.getHostAddress(),myport);
-            //nodeList.add(me);
+
             pred=me;
             System.out.println("NodeID is: "+me.getID() + ". Predecessor ID: " +pred.getID());
             //启动DHT线程，传入参数为0,负责构造路由表信息(只有自己的路由表)
@@ -93,10 +93,10 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             InetAddress myIP = InetAddress.getLocalHost();
             System.out.println("My IP: " + myIP.getHostAddress() + "\n");
 
-            int initInfo = getNodeInfo(myIP.getHostAddress(),args[2]);//只返回一个字段即NodeID
+            int initInfo = getNodeInfo(myIP.getHostAddress(),myport);//只返回一个字段即NodeID
             //构造当前节点的node类并存储
             me = new Node(initInfo,myIP.getHostAddress(),myport);
-            nodeList.add(me);
+
             //查找新加入节点的前继通过已知的节点的路由表
             String result=makeConnection(knownhostIP, knownhostport, "findPred/"+initInfo);
             String[] tokens = result.split("/");
@@ -318,15 +318,14 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         }
         else {//ID等于其他值时，进行的是信息交互的部分
             try {
-                //System.out.println( "*** A Client came; Service it *** " + this.ID );
-
-                BufferedReader inFromClient =
-                    new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            	
+                BufferedReader inFromClient =new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 DataOutputStream outToClient = new DataOutputStream(connection.getOutputStream());
+                System.out.println();
+                System.out.println( "*** A request came, Service begins....*** ");
+                
                 String received = inFromClient.readLine();
-                //System.out.println("Received: " + received);
                 String response = considerInput(received);
-                //System.out.println("Sending back to client: "+ response);
 
                 outToClient.writeBytes(response + "\n");	
             } catch (Exception e) {
