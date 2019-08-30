@@ -315,7 +315,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                     init_finger_table(pred);//初始化路由表，即是新加入节点发现其他节点的过程
                     System.out.println("路由表已初始化.....");
                     update_others();//更新其他节点的路由，即是新加入节点被发现的过程
-                    System.out.println("其它节点路由表已更新");//
+                    System.out.println("其它节点路由表已更新");
                     buildNodeList();
                     System.out.println("nodeList创建完成");
                     updateOthersList();
@@ -686,6 +686,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     //新增：节点生成nodeList
     public static void buildNodeList() throws Exception{
     	addLocalNode();
+    	System.out.println("执行到此----");
     	Node current=new Node(finger[m].getSuccessor().getID(),finger[m].getSuccessor().getIP(), finger[m].getSuccessor().getPort());
     	while(!nodeList.contains(me)) {
     		getNode(makeConnection(current.getIP(),current.getPort(), "addLocalNode/"));
