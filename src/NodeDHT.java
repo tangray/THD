@@ -747,8 +747,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     	String string="";
     	while(iterator.hasNext()) {
     		Node node =iterator.next();
-    		if(node==me)
-    			continue;
     		string="节点ID:"+node.getID()+"  IP地址："+node.getIP()+"  端口号： "+node.getPort()+" ";
     		System.out.println(string);
     	}
