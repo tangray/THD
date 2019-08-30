@@ -27,7 +27,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     private static String knownhostport;
     private static String myIP;
     private static String myport;
-    private static HashSet<Node> nodeList = new HashSet<Node>();
+    private static ArrayList<Node> nodeList = new ArrayList<Node>();
     private static List<Word> wordList = new ArrayList<Word>();
 
     public NodeDHT(Socket s, int i) {
@@ -719,11 +719,11 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     public static String loadNode(){
 	     Node node =null;
 	     String results="";
-	     Iterator<Node> iterator = nodeList.iterator();
-	     while(iterator.hasNext()) {
-	    	node =iterator.next();
-	    	results=results+node.getID() + "/" + node.getIP() + "/" + node.getPort()+"/";
-	     }     
+	     for(int i=0;i<nodeList.size()-1;i++) {
+	    	  node = nodeList.get(i);
+		      results=results+node.getID() + "/" + node.getIP() + "/" + node.getPort()+"/";
+	     }
+	     results=results+nodeList.get(nodeList.size()-1).getID() + "/" + nodeList.get(nodeList.size()-1).getIP() + "/" + nodeList.get(nodeList.size()-1).getPort()+"/";
 	     return results;
     }
     //新增：提供本节点的路由表中的节点信息给其它节点
