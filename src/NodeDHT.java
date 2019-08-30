@@ -25,6 +25,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     private static int numDHT;
     private static String knownhostIP;
     private static String knownhostport;
+    private static String myport;
     private static List<Node> nodeList = new ArrayList<Node>();
     private static List<Word> wordList = new ArrayList<Word>();
 
@@ -40,6 +41,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         //args参数为两位:[当前节点监听端口] [numNodes]=>说明是第一个加入的节点
         //args参数为三位:[已知节点IP] [已知节点监听端口] [当前节点监听端口] [numNodes]=>说明不是第一个加入的节点
         if (args.length==2){
+        	myport=args[0];
             //计算numDHT只在第一个加入的节点当中
             int maxNumNodes = Integer.parseInt(args[1]);
             m = (int) Math.ceil(Math.log(maxNumNodes) / Math.log(2));
@@ -49,9 +51,9 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             InetAddress myIP = InetAddress.getLocalHost();
             System.out.println("My IP: " + myIP.getHostAddress() + "\n");
 
-            int initInfo = getFisrtNodeInfo(myIP.getHostAddress(),args[0]);//只返回一个字段即NodeID
+            int initInfo = getFisrtNodeInfo(myIP.getHostAddress(),myport);//只返回一个字段即NodeID
             //构造当前节点的node类并存储
-            me = new Node(initInfo,myIP.getHostAddress(),args[0]);
+            me = new Node(initInfo,myIP.getHostAddress(),myport);
             nodeList.add(me);
             pred=me;
             System.out.println("My given Node ID is: "+me.getID() + ". Predecessor ID: " +pred.getID());
@@ -82,6 +84,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         if(args.length==4){
         	knownhostIP=args[0];
         	knownhostport=args[1];
+        	myport=args[2];
         	int maxNumNodes = Integer.parseInt(args[3]);
             m = (int) Math.ceil(Math.log(maxNumNodes) / Math.log(2));
             finger = new FingerTable[m+1];
@@ -90,12 +93,12 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             InetAddress myIP = InetAddress.getLocalHost();
             System.out.println("My IP: " + myIP.getHostAddress() + "\n");
 
-            int initInfo = getNodeInfo(myIP.getHostAddress(),args[0]);//只返回一个字段即NodeID
+            int initInfo = getNodeInfo(myIP.getHostAddress(),args[2]);//只返回一个字段即NodeID
             //构造当前节点的node类并存储
-            me = new Node(initInfo,myIP.getHostAddress(),args[0]);
+            me = new Node(initInfo,myIP.getHostAddress(),myport);
             nodeList.add(me);
             //查找新加入节点的前继通过已知的节点的路由表
-            String result=makeConnection(args[0], args[1], "findPred/"+initInfo);
+            String result=makeConnection(knownhostIP, knownhostport, "findPred/"+initInfo);
             String[] tokens = result.split("/");
             pred = new Node(Integer.parseInt(tokens[1]),tokens[2],tokens[3]);
             System.out.println("My given Node ID is: "+me.getID() + ". Predecessor ID: " +pred.getID());
@@ -107,7 +110,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             //监听端口，等待其他节点或者客户端的请求
             int count = 1;
             System.out.println("Listening for connection from Client or other Nodes...");
-            int port = Integer.parseInt(args[2]);
+            int port = Integer.parseInt(myport);
 
             try {
                    serverSocket = new ServerSocket( port );
@@ -134,7 +137,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         }	
       
     }
-    //返回一个随机的DHT节点
+    
     public static String getRandomNode() throws Exception{
         Random rand = new Random();
         int randID = rand.nextInt(numDHT);
@@ -142,7 +145,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         String result = randNode.getIP() + ":" + randNode.getPort();
         return result;
     }
-    //加入结束，释放对象锁
+
     public static void finishJoining(int id){
         System.out.println("*** Post Initiation Call: Node " +id + " is in the DHT.");
         System.out.println("Current number of nodes = " + nodeList.size() + "\n");
@@ -150,7 +153,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             busy = 0;
         }
     }
-    //第一个加入的节点的nodeinfo
+    
     public static int getFisrtNodeInfo(String nodeIP, String nodePort) throws Exception{
         //生成NID
         if (busy == 0) {
@@ -185,7 +188,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     }
 } 
 
-    //其余节点的nodeinfo
+    
     public static int getNodeInfo(String nodeIP, String nodePort) throws Exception{
         //生成NID
         if (busy == 0) {
@@ -235,7 +238,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         return -1;
     }
 } 
-    //修改：删除了对当前node的if判断
+
     public static String makeConnection(String ip, String port, String message) throws Exception {
         //System.out.println("Making connection to " + ip + " at " +port + " to " + message);
 
@@ -304,8 +307,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                     System.out.println("Initiated Finger Table!");
                     update_others();//更新其他节点的路由，即是新加入节点被发现的过程
                     System.out.println("Updated all other nodes!");
-                    buildNodeList();//建立nodeList
-                    updateOthersList();//更新其它节点的nodeList
+                    buildNodeList();
+                    updateOthersList();
             } catch (Exception e) {}
             
             try { 
@@ -332,7 +335,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         }
     }
 
-    //处理请求
+    //处理请求（无修改）
     public static String considerInput(String received) throws Exception {
         String[] tokens = received.split("/");
         String outResponse = "";
@@ -655,7 +658,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     		String string = makeConnection(node.getIP(),node.getPort(),"updateList/"+node.getID()+"/"+node.getIP()+"/"+node.getPort());
     	}
     }
-    //新增：生成nodeList
+    //新增：节点生成nodeList
     public static void buildNodeList() throws Exception{
     	ArrayList<Node> list=null;
     	addLocalNode(list);//先添加自己路由表中的Node(这时候肯定不包含自己)
@@ -709,4 +712,3 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     	return result;
     }
 }
-
