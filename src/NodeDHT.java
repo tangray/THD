@@ -681,8 +681,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     	addLocalNode();
     	Node current=new Node(finger[m].getSuccessor().getID(),finger[m].getSuccessor().getIP(), finger[m].getSuccessor().getPort());
     	while(!nodeList.contains(me)) {
-    		getNode(makeConnection(current.getIP(),current.getPort(), "addLocalNode"));
-    		String str=makeConnection(current.getIP(), current.getPort(), "remoteNode");
+    		getNode(makeConnection(current.getIP(),current.getPort(), "addLocalNode/"));
+    		String str=makeConnection(current.getIP(), current.getPort(), "remoteNode/");
     		String[] tokens = str.split("/");
     		current=new Node(Integer.parseInt(tokens[0]),tokens[1],tokens[2]);
     	}
