@@ -668,7 +668,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     		Node node =iterator.next();
     		if(node==me)
     			continue;
-    	    string = makeConnection(node.getIP(),node.getPort(),"updateList/"+node.getID()+"/"+node.getIP()+"/"+node.getPort());
+    	    string = makeConnection(node.getIP(),node.getPort(),"updateList/"+me.getID()+"/"+me.getIP()+"/"+me.getPort());
     	}
     }
     //新增：节点生成nodeList
