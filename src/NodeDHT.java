@@ -49,14 +49,14 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             numDHT = (int)Math.pow(2,m);
          
             InetAddress myIP = InetAddress.getLocalHost();
-            System.out.println("My IP: " + myIP.getHostAddress() + "\n");
+            System.out.println("本节点 IP地址:：" + myIP.getHostAddress() + "\n");
 
             int initInfo = getFisrtNodeInfo(myIP.getHostAddress(),myport);//只返回一个字段即NodeID
             //构造当前节点的node类并存储
             me = new Node(initInfo,myIP.getHostAddress(),myport);
 
             pred=me;
-            System.out.println("NodeID is: "+me.getID() + ". Predecessor ID: " +pred.getID());
+            System.out.println("节点ID ： "+me.getID() + ". 前继节点ID ： " +pred.getID());
             //启动DHT线程，传入参数为0,负责构造路由表信息(只有自己的路由表)
             Socket temp = null;
             Runnable runnable = new NodeDHT(temp,0);
@@ -64,13 +64,13 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             thread.start();
             //监听端口，等待其他节点或者客户端的请求
             int count = 1;
-            System.out.println("Listening for connection from Client or other Nodes...");
+            System.out.println("正在等待其它节点请求...");
             int port = Integer.parseInt(args[0]);
 
             try {
                    serverSocket = new ServerSocket( port );
                 } catch (IOException e) {
-                   System.out.println("Could not listen on port " + port);
+                   System.out.println("无法监听端口 - " + port);
                    System.exit(-1);
                 }
             
@@ -91,7 +91,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             numDHT = (int)Math.pow(2,m);
              
             InetAddress myIP = InetAddress.getLocalHost();
-            System.out.println("My IP: " + myIP.getHostAddress() + "\n");
+            System.out.println("本节点IP地址 : " + myIP.getHostAddress() + "\n");
 
             int initInfo = getNodeInfo(myIP.getHostAddress(),myport);//只返回一个字段即NodeID
             //构造当前节点的node类并存储
@@ -101,7 +101,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             String result=makeConnection(knownhostIP, knownhostport, "findPred/"+initInfo);
             String[] tokens = result.split("/");
             pred = new Node(Integer.parseInt(tokens[0]),tokens[1],tokens[2]);
-            System.out.println("My given Node ID is: "+me.getID() + ". Predecessor ID: " +pred.getID());
+            System.out.println("本节点 ID : "+me.getID() + ". 前继节点 ID: " +pred.getID());
             //启动DHT线程，传入参数为1,负责构造路由表信息
             Socket temp = null;
             Runnable runnable = new NodeDHT(temp,-1);
@@ -109,13 +109,13 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             thread.start();
             //监听端口，等待其他节点或者客户端的请求
             int count = 1;
-            System.out.println("Listening for connection from Client or other Nodes...");
+            System.out.println("正在等待其它节点请求...");
             int port = Integer.parseInt(myport);
 
             try {
                    serverSocket = new ServerSocket( port );
                 } catch (IOException e) {
-                   System.out.println("Could not listen on port " + port);
+                   System.out.println("无法监听端口 - " + port);
                    System.exit(-1);
                 }
             
@@ -172,9 +172,9 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             BigInteger hashNum = new BigInteger(1,hashBytes);
 
             nodeID = Math.abs(hashNum.intValue()) % numDHT;
-            System.out.println("Generated ID: " + nodeID + " for requesting node");
+            System.out.println("节点 ID已生成： " + nodeID);
 
-            System.out.println("First node added ... ");
+            System.out.println("第一个节点已经加入 ... ");
 
             initInfo = nodeID;
 
