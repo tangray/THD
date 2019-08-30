@@ -19,10 +19,10 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     private static ServerSocket serverSocket = null; 
     private static Node me, pred;
     private static int m;
+    private static int numDHT;
     private static int busy;
     private static Object object = new Object();
-    private static FingerTable[] finger;
-    private static int numDHT;
+    private static FingerTable[] finger;    
     private static String knownhostIP;
     private static String knownhostport;
     private static String myport;
@@ -38,8 +38,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     {
         System.out.println(" ***************************************************************************************************");
         //第一个节点和其他节点的加入，通过参数的位数区分（修改）
-        //args参数为两位:[当前节点监听端口] [numNodes]=>说明是第一个加入的节点
-        //args参数为三位:[已知节点IP] [已知节点监听端口] [当前节点监听端口] [numNodes]=>说明不是第一个加入的节点
+        //args参数为两位:[当前节点监听端口] [numNodes]=>说明是第一个加入的节点 args[0] args[1]
+        //args参数为三位:[已知节点IP] [已知节点监听端口] [当前节点监听端口] [numNodes]=>说明不是第一个加入的节点 args[0]  args[1]  args[2]  args[3]
         if (args.length==2){
         	myport=args[0];
             //计算numDHT只在第一个加入的节点当中
@@ -54,9 +54,9 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             int initInfo = getFisrtNodeInfo(myIP.getHostAddress(),myport);//只返回一个字段即NodeID
             //构造当前节点的node类并存储
             me = new Node(initInfo,myIP.getHostAddress(),myport);
-            nodeList.add(me);
+            //nodeList.add(me);
             pred=me;
-            System.out.println("My given Node ID is: "+me.getID() + ". Predecessor ID: " +pred.getID());
+            System.out.println("NodeID is: "+me.getID() + ". Predecessor ID: " +pred.getID());
             //启动DHT线程，传入参数为0,负责构造路由表信息(只有自己的路由表)
             Socket temp = null;
             Runnable runnable = new NodeDHT(temp,0);
@@ -81,7 +81,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                    t.start();
             }
         }     
-        if(args.length==4){
+        else if(args.length==4){
         	knownhostIP=args[0];
         	knownhostport=args[1];
         	myport=args[2];
@@ -277,7 +277,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             for (int i = 1; i <= m; i++) {
                     finger[i].setSuccessor(me);
             }
-            System.out.println("Done, all finger tablet set as me (only node in DHT)");
+            System.out.println("finger is established, current node is the only node in the Net");
             try {
 				buildNodeList();
 			} catch (Exception e1) {}
@@ -285,8 +285,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             try { 
                 finishJoining(me.getID());//释放对象锁
             } catch (Exception e) {}
-        }
-        if (this.ID == -1) {//ID==1时，这是网络非第一个加入的节点的构造部分
+        }       
+        else if (this.ID == -1) {//ID==1时，这是网络非第一个加入的节点的构造部分
 
             System.out.println("Building Finger table ... ");
             for (int i = 1; i <= m; i++) {
