@@ -718,7 +718,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     //新增：返回路由表中最远的节点
     public static String remoteNode(){
     	String result = null;
-    	result =finger[m].getSuccessor().getID()+finger[m].getSuccessor().getIP()+finger[m].getSuccessor().getPort();
+    	result =finger[m].getSuccessor().getID()+"/"+finger[m].getSuccessor().getIP()+"/"+finger[m].getSuccessor().getPort();
     	return result;
     }
     //新增：广播消息
