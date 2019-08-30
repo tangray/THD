@@ -76,6 +76,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             
             while (true) {
                    Socket newCon = serverSocket.accept();
+                   System.out.println();
+                   System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
                    Runnable runnable2 = new NodeDHT(newCon,count++);
                    Thread t = new Thread(runnable2);
                    t.start();
@@ -121,6 +123,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             
             while (true) {
                    Socket newCon = serverSocket.accept();
+                   System.out.println();
+                   System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
                    Runnable runnable2 = new NodeDHT(newCon,count++);
                    Thread t = new Thread(runnable2);
                    t.start();
@@ -325,8 +329,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         }
         else {//ID等于其他值时，进行的是信息交互的部分
             try {
-            	System.out.println();
-                System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
                 BufferedReader inFromClient =new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 DataOutputStream outToClient = new DataOutputStream(connection.getOutputStream());
                 
@@ -675,18 +677,14 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     }
     //新增：节点生成nodeList
     public static void buildNodeList() throws Exception{
-    	//ArrayList<Node> list=null;
-    	addLocalNode(nodeList);//先添加自己路由表中的Node(这时候肯定不包含自己)
+    	addLocalNode(nodeList);
     	Node current=new Node(finger[m].getSuccessor().getID(),finger[m].getSuccessor().getIP(), finger[m].getSuccessor().getPort());
-    	while(!nodeList.contains(me)) {//包含自己的时候说明套圈了！所有节点肯定包含在内了
-    		//获取路由表最后一项的路由表信息
+    	while(!nodeList.contains(me)) {
     		nodeList.addAll(getNode(makeConnection(current.getIP(),current.getPort(), "addLocalNode")));
-    		//更新current
     		String str=makeConnection(current.getIP(), current.getPort(), "remoteNode");
     		String[] tokens = str.split("/");
     		current=new Node(Integer.parseInt(tokens[0]),tokens[1],tokens[2]);
     	}
-    	//去重,当节点少的时候，例如建立之初，路由表中的后继节点肯定存在重复，所以需要去重！
     	LinkedHashSet<Node> lhs = new LinkedHashSet<Node>();
 		lhs.addAll(nodeList);
 		nodeList.clear();
@@ -747,7 +745,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     	String string="";
     	System.out.println("*****节点列表*****");
     	while(iterator.hasNext()) {
-    		Node node =iterator.next();
+    		Node node = iterator.next();
     		string="节点ID:"+node.getID()+"  IP地址："+node.getIP()+"  端口号： "+node.getPort()+" ";
     		System.out.println(string);
     	}
