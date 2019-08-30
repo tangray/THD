@@ -147,8 +147,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     }
 
     public static void finishJoining(int id){
-        System.out.println("*** Post Initiation Call: Node " +id + " is in the DHT.");
-        System.out.println("Current number of nodes = " + nodeList.size() + "\n");
+        System.out.println("*** 节点 " +id + " 已经在DHT网络中！.");
+        System.out.println("当前节点个数 ： " + nodeList.size() + "\n");
         synchronized (object) {
             busy = 0;
         }
@@ -299,17 +299,19 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             }
             finger[m].setInterval(finger[m].getStart(),finger[1].getStart()-1); 
 
-
             for (int i = 1; i <= m; i++) {
                     finger[i].setSuccessor(me);
             }
+            System.out.println("空表创建完成....");
             try{
                     init_finger_table(pred);//初始化路由表，即是新加入节点发现其他节点的过程
-                    System.out.println("Initiated Finger Table!");
+                    System.out.println("路由表已初始化.....");
                     update_others();//更新其他节点的路由，即是新加入节点被发现的过程
-                    System.out.println("Updated all other nodes!");
+                    System.out.println("其它节点路由表已更新");
                     buildNodeList();
+                    System.out.println("nodeList创建完成");
                     updateOthersList();
+                    System.out.println("其它节点nodeList已更新");
             } catch (Exception e) {}
             
             try { 
