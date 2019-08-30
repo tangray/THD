@@ -287,7 +287,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             System.out.println("路由表创建完成，此节点是网络中唯一节点！");
             
             try {
-				buildNodeList();
+				nodeList.add(me);
 				System.out.println("nodeList创建完成");
 			} catch (Exception e1) {}
             
@@ -722,7 +722,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
 	     Iterator<Node> iterator = nodeList.iterator();
 	     while(iterator.hasNext()) {
 	    	node =iterator.next();
-	    	results=results+node.getID() + "/" + node.getIP() + "/" + node.getPort();
+	    	results=results+node.getID() + "/" + node.getIP() + "/" + node.getPort()+"/";
 	     }     
 	     return results;
     }
