@@ -51,14 +51,14 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
          
             InetAddress mIP = InetAddress.getLocalHost();
             myIP=mIP.getHostAddress();
-            System.out.println("本节点 IP地址:：" + myIP + "\n");
+            System.out.println("本节点 IP地址: " + myIP );
 
             int initInfo = getFisrtNodeInfo(myIP,myport);//只返回一个字段即NodeID
             //构造当前节点的node类并存储
             me = new Node(initInfo,myIP,myport);
 
             pred=me;
-            System.out.println("节点ID ： "+me.getID() + ". 前继节点ID ： " +pred.getID());
+            System.out.println("节点ID ： "+me.getID() + ". 前继节点ID ： " +pred.getID()+"/n");
             //启动DHT线程，传入参数为0,负责构造路由表信息(只有自己的路由表)
             Socket temp = null;
             Runnable runnable = new NodeDHT(temp,0);
@@ -285,11 +285,14 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                     finger[i].setSuccessor(me);
             }
             System.out.println("路由表创建完成，此节点是网络中唯一节点！");
+            System.out.println();
             printFingerInfo();
             System.out.println();
             try {
+            	System.out.println("开始创建节点列表...");
 				nodeList.add(me);
-				System.out.println("nodeList创建完成");
+				System.out.println("节点列表创建完成");
+				printNodeInfo();
 			} catch (Exception e1) {}
             
             try { 
@@ -679,6 +682,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     //新增：更新nodeList
     public static void updateList(Node node) throws Exception {
     	nodeList.add(node);
+    	System.out.println("[系统提示]： "+"新节点 "+node.getID()+"加入DHT网络");
     	printNodeInfo();
     }
     //新增：更新其它节点的nodeList
@@ -730,13 +734,13 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     public static String loadNode(){
 	     Node node =null;
 	     String results="";
-	     System.out.println("装载开始！");
+	     //System.out.println("装载开始！");
 	     for(int i=0;i<nodeList.size()-1;i++) {
 	    	  node = nodeList.get(i);
 		      results=results+node.getID() + "/" + node.getIP() + "/" + node.getPort()+"/";
 	     }
 	     results=results+nodeList.get(nodeList.size()-1).getID() + "/" + nodeList.get(nodeList.size()-1).getIP() + "/" + nodeList.get(nodeList.size()-1).getPort()+"/";
-	     System.out.println("装载完成！");
+	     //System.out.println("装载完成！");
 	     return results;
     }
     //新增：提供本节点的路由表中的节点信息给其它节点
@@ -775,7 +779,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     	String results="";
     	System.out.println("*****路由表信息*****");
     	for(int i=1;i<=m;i++) {
-		      System.out.println(results+"Index["+finger[i].getStart()+"]   "+"后继节点ID: "+finger[i].getSuccessor().getID());
+		      System.out.println(results+"Index["+finger[i].getStart()+"]       "+"后继节点ID: "+finger[i].getSuccessor().getID());
 	     }
     }
     //新增：打印节点信息
