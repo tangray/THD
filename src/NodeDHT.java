@@ -359,7 +359,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
 
                 outToClient.writeBytes(response + "\n");	
             } catch (Exception e) {
-                System.out.println("[系统提示]:"+"线程无法服务连接");
+                //System.out.println("[系统提示]:"+"线程无法服务连接");
+            	System.out.println(e.getStackTrace());
             }
 
         }
