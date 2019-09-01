@@ -41,7 +41,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         //args参数为两位:[当前节点监听端口] [numNodes]=>说明是第一个加入的节点 args[0] args[1]
         //args参数为三位:[已知节点IP] [已知节点监听端口] [当前节点监听端口] [numNodes]=>说明不是第一个加入的节点 args[0]  args[1]  args[2]  args[3]
         if (args.length==2){
-        	System.out.println(" *********************************启动DHT网络******************************************");
+        	System.out.println(" *********************************启动DHT网络*************************************");
         	myport=args[0];
             //计算numDHT只在第一个加入的节点当中
             int maxNumNodes = Integer.parseInt(args[1]);
@@ -86,7 +86,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             }
         }     
         else if(args.length==4){
-        	System.out.println(" *********************************正在加入DHT网络******************************************");
+        	System.out.println(" *********************************启动DHT网络*************************************");
         	knownhostIP=args[0];
         	knownhostport=args[1];
         	myport=args[2];
