@@ -156,8 +156,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     public static void finishJoining(int id) throws Exception{
     	System.out.println();
         System.out.println("[系统提示]:"+"节点 " +id + "已经在DHT网络中！.");
+        printNodeInfo();
         printNum();
-		printNodeInfo();
         synchronized (object) {
             busy = 0;
         }
@@ -785,7 +785,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     public static void printNodeInfo() throws Exception{
     	Iterator<Node> iterator = nodeList.iterator();
     	String string="";
-    	System.out.println();
+    	//System.out.println();
     	System.out.println("*****节点列表*****");
     	if(nodeList.size()==0)
     		System.out.println("列表为空！");
