@@ -325,6 +325,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                     System.out.println("开始构建nodeList...");
                     printNodeInfo();
                     buildNodeList();
+                    printNodeInfo();
                     System.out.println("nodeList创建完成");
                     updateOthersList();
                     System.out.println("其它节点nodeList已更新");
