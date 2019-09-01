@@ -397,7 +397,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         	outResponse=Integer.toString(find_successor(find_predecessor(Integer.parseInt(tokens[1])).getID()).getID());
         }
         //新添加
-        else if (tokens[0].equals("addLocalNode")) {
+        else if (tokens[0].equals("load")) {
         	outResponse=loadNode();
         }
         //新添加
