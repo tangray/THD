@@ -322,6 +322,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                     System.out.println("路由表已初始化.....");
                     update_others();//更新其他节点的路由，即是新加入节点被发现的过程
                     System.out.println("其它节点路由表已更新");
+                    System.out.println("开始构建nodeList...");
+                    printNodeInfo();
                     buildNodeList();
                     System.out.println("nodeList创建完成");
                     updateOthersList();
@@ -691,6 +693,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     }
     public static void buildNodeList() throws Exception{
     	nodeList.add(me);
+    	System.out.println("nodeList中已经添加本节点");
+    	printNodeInfo();
     	String str = makeConnection(knownhostIP, knownhostport, "load/");
     	getNode(str);
     }
@@ -779,6 +783,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     	String string="";
     	System.out.println();
     	System.out.println("*****节点列表*****");
+    	if(nodeList.size()==0)
+    		System.out.println("列表为空！");
     	while(iterator.hasNext()) {
     		Node node = iterator.next();
     		string="节点ID:"+node.getID()+"  IP地址："+node.getIP()+"  端口号： "+node.getPort()+" ";
