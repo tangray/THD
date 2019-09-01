@@ -695,14 +695,14 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     }
     //新增：更新其它节点的nodeList
     public static void updateOthersList() throws Exception {
-    	Node node=null;
-    	String str=null;
-    	for(int i=0;i<nodeList.size()-1;i++) {
-	    	  node = nodeList.get(i);
-	    	  if(node==me)
-	    		  continue;
-	    	  str = makeConnection(node.getIP(),node.getPort(),"updateList/"+me.getID()+"/"+me.getIP()+"/"+me.getPort());
-	     }
+    	Iterator<Node> iterator = nodeList.iterator();
+    	String string=null;
+    	while(iterator.hasNext()) {
+    		Node node =iterator.next();
+    		if(node==me)
+    			continue;
+    	    string = makeConnection(node.getIP(),node.getPort(),"updateList/"+me.getID()+"/"+me.getIP()+"/"+me.getPort());
+    	}
     }
     public static void buildNodeList() throws Exception{
     	nodeList.add(me);
