@@ -286,7 +286,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             }
             System.out.println("路由表创建完成，此节点是网络中唯一节点！");
             printFingerInfo();
-            
+            System.out.println();
             try {
 				nodeList.add(me);
 				System.out.println("nodeList创建完成");
@@ -312,10 +312,13 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                     finger[i].setSuccessor(me);
             }
             System.out.println("空表创建完成....");
+            System.out.println();
             printFingerInfo();
             try{
                     init_finger_table(pred);//初始化路由表，即是新加入节点发现其他节点的过程
+                    System.out.println();
                     printFingerInfo();
+                    System.out.println();
                     System.out.println("路由表已初始化.....");
                     update_others();//更新其他节点的路由，即是新加入节点被发现的过程
                     System.out.println("其它节点路由表已更新");
