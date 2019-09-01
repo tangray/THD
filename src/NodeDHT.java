@@ -767,7 +767,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     	String results="";
     	System.out.println("*****路由表信息*****");
     	for(int i=0;i<nodeList.size();i++) {
-		      System.out.println(results+finger[i].getStart()+finger[i].getSuccessor().getID());
+		      System.out.println(results+finger[i+1].getStart()+finger[i+1].getSuccessor().getID());
 	     }
     }
     //新增：打印节点信息
