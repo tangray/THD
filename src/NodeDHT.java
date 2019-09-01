@@ -71,7 +71,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             try {
                    serverSocket = new ServerSocket( port );
                 } catch (IOException e) {
-                   System.out.println("无法监听端口 - " + port);
+                   System.out.println("[系统提示]:"+"无法监听端口 - " + port);
                    System.exit(-1);
                 }
             
@@ -96,7 +96,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
              
             InetAddress mIP = InetAddress.getLocalHost();
             myIP=mIP.getHostAddress(); 
-            System.out.println("本节点IP地址 : " + myIP + "\n");
+            System.out.println("本节点IP地址: " + myIP);
 
             int initInfo = getNodeInfo(myIP,myport);//只返回一个字段即NodeID
             //构造当前节点的node类并存储
@@ -153,6 +153,16 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         return result;
     }
 
+    public static void finishJoiningFirst(int id) throws Exception{
+    	System.out.println();
+        System.out.println("[系统提示]:"+"节点 " +id + "已经在DHT网络中！.");
+        printNodeInfo();
+        printNum();
+        synchronized (object) {
+            busy = 0;
+        }
+    }
+    
     public static void finishJoining(int id) throws Exception{
     	System.out.println();
         System.out.println("[系统提示]:"+"节点 " +id + "已经在DHT网络中！.");
@@ -295,7 +305,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
 			} catch (Exception e1) {}
             
             try { 
-                finishJoining(me.getID());//释放对象锁
+                finishJoiningFirst(me.getID());//释放对象锁
             } catch (Exception e) {}
         }       
         else if (this.ID == -1) {//ID==1时，这是网络非第一个加入的节点的构造部分
@@ -315,24 +325,21 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             }
             System.out.println("空表创建完成....");
             System.out.println();
-            printFingerInfo();
-            try{
+            //printFingerInfo();
+            try{    
+            	    System.out.println("开始初始化路由表.....");
                     init_finger_table(pred);//初始化路由表，即是新加入节点发现其他节点的过程
-                    System.out.println();
-                    printFingerInfo();
-                    System.out.println();
-                    System.out.println("路由表已初始化.....");
+                    System.out.println("路由表初始化完成.....");
                     update_others();//更新其他节点的路由，即是新加入节点被发现的过程
                     System.out.println("其它节点路由表已更新");
-                    System.out.println("开始构建nodeList...");
-                    printNodeInfo();
+                    System.out.println();
+                    System.out.println("开始构建节点列表...");
                     buildNodeList();
-                    printNodeInfo();
-                    System.out.println("nodeList创建完成");
+                    System.out.println("节点列表创建完成");
                     updateOthersList();
-                    System.out.println("其它节点nodeList已更新");
-                    noticeOthers("printNum/");
-                    noticeOthers("printNodeInfo/");
+                    System.out.println("其它节点的列表已更新");
+                    //noticeOthers("printNum/");
+                    //noticeOthers("printNodeInfo/");
             } catch (Exception e) {
             	e.printStackTrace();
             }
@@ -352,7 +359,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
 
                 outToClient.writeBytes(response + "\n");	
             } catch (Exception e) {
-                System.out.println("线程无法服务连接");
+                System.out.println("[系统提示]:"+"线程无法服务连接");
             }
 
         }
@@ -683,6 +690,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     	nodeList.add(node);
     	System.out.println("[系统提示]： "+"新节点 "+node.getID()+"加入DHT网络");
     	printNodeInfo();
+    	printNum();
     }
     //新增：更新其它节点的nodeList
     public static void updateOthersList() throws Exception {
@@ -697,8 +705,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     }
     public static void buildNodeList() throws Exception{
     	nodeList.add(me);
-    	System.out.println("nodeList中已经添加本节点");
-    	printNodeInfo();
     	String str = makeConnection(knownhostIP, knownhostport, "load/");
     	getNode(str);
     }
