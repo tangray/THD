@@ -719,6 +719,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     public static String loadNode(){
 	     Node node =null;
 	     String results="";
+	     System.out.println("装载开始！");
 	     for(int i=0;i<nodeList.size()-1;i++) {
 	    	  node = nodeList.get(i);
 		      results=results+node.getID() + "/" + node.getIP() + "/" + node.getPort()+"/";
