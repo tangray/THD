@@ -8,10 +8,10 @@ import java.util.*;
 
 //
 //
-// This is the Code for the Node that is part of the DHT. 
+// 
 // 新节点加入时需要知道一个已经在网络中的节点的IP和监听端口
 //
-public class NodeDHT implements Runnable //extends UnicastRemoteObject implements NodeDHTInterface
+public class NodeDHT implements Runnable 
 {
 
     private int ID;
@@ -43,7 +43,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         if (args.length==2){
         	System.out.println(" *********************************启动DHT网络*************************************");
         	myport=args[0];
-            //计算numDHT只在第一个加入的节点当中
+
             int maxNumNodes = Integer.parseInt(args[1]);
             m = (int) Math.ceil(Math.log(maxNumNodes) / Math.log(2));
             finger = new FingerTable[m+1];
@@ -53,21 +53,18 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             myIP=mIP.getHostAddress();
             System.out.println("本节点IP地址: " + myIP );
 
-            int initInfo = getFisrtNodeInfo(myIP,myport);//只返回一个字段即NodeID
-            //构造当前节点的node类并存储
+            int initInfo = getFisrtNodeInfo(myIP,myport);
             me = new Node(initInfo,myIP,myport);
             pred=me;
             System.out.println("节点ID:"+me.getID() + "   前继节点ID:" +pred.getID());
-            //启动DHT线程，传入参数为0,负责构造路由表信息(只有自己的路由表)
+
             Socket temp = null;
             Runnable runnable = new NodeDHT(temp,0);
             Thread thread = new Thread(runnable);
             thread.start();
-            //监听端口，等待其他节点或者客户端的请求
-            int count = 1;
-            //System.out.println("正在等待其它节点请求...");
-            int port = Integer.parseInt(args[0]);
 
+            int count = 1;
+            int port = Integer.parseInt(args[0]);
             try {
                    serverSocket = new ServerSocket( port );
                 } catch (IOException e) {
@@ -79,8 +76,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                    Socket newCon = serverSocket.accept();
                    Runnable runnable2 = new NodeDHT(newCon,count++);
                    Thread t = new Thread(runnable2);
-               	   //System.out.println();
-                   //System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
                    t.start();
             }
         }     
@@ -98,25 +93,21 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             myIP=mIP.getHostAddress(); 
             System.out.println("本节点IP地址: " + myIP);
 
-            int initInfo = getNodeInfo(myIP,myport);//只返回一个字段即NodeID
-            //构造当前节点的node类并存储
+            int initInfo = getNodeInfo(myIP,myport);
             me = new Node(initInfo,myIP,myport);
 
-            //查找新加入节点的前继通过已知的节点的路由表
             String result=makeConnection(knownhostIP, knownhostport, "findPred/"+initInfo);
             String[] tokens = result.split("/");
             pred = new Node(Integer.parseInt(tokens[0]),tokens[1],tokens[2]);
             System.out.println("本节点 ID:"+me.getID() + "   前继节点 ID:" +pred.getID());
-            //启动DHT线程，传入参数为1,负责构造路由表信息
+
             Socket temp = null;
             Runnable runnable = new NodeDHT(temp,-1);
             Thread thread = new Thread(runnable);
             thread.start();
-            //监听端口，等待其他节点或者客户端的请求
-            int count = 1;
-            //System.out.println("正在等待其它节点请求...");
-            int port = Integer.parseInt(myport);
 
+            int count = 1;
+            int port = Integer.parseInt(myport);
             try {
                    serverSocket = new ServerSocket( port );
                 } catch (IOException e) {
@@ -128,8 +119,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                    Socket newCon = serverSocket.accept();
                    Runnable runnable2 = new NodeDHT(newCon,count++);
                    Thread t = new Thread(runnable2);
-                   //System.out.println();
-                   //System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
                    t.start();
             }
         }
@@ -144,7 +133,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         }	
       
     }
-    
+    //改动：通过路由表找后继获取随机节点
     public static String getRandomNode() throws Exception{
         Random rand = new Random();
         int randID = rand.nextInt(numDHT);
@@ -172,7 +161,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             busy = 0;
         }
     }
-    
+    //新增：获取第一个节点的信息
     public static int getFisrtNodeInfo(String nodeIP, String nodePort) throws Exception{
         if (busy == 0) {
               synchronized (object) {
@@ -201,16 +190,15 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     }
 } 
 
-    
+    //改动：修改了确定冲突的方式
     public static int getNodeInfo(String nodeIP, String nodePort) throws Exception{
-        //生成NID
         if (busy == 0) {
               synchronized (object) {
                  busy = 1;
         }
         int nodeID = 0;
         int initInfo =0;
-        //System.out.println("*** Node Initation Call: Connection from " + nodeIP);
+
         try{ 
             MessageDigest md = MessageDigest.getInstance("SHA1");
             md.reset();
@@ -222,9 +210,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             nodeID = Math.abs(hashNum.intValue()) % numDHT;
             System.out.println("Generated ID: " + nodeID + " for requesting node");
 
-           //解决冲突部分（修改），如何判断是否有冲突？
-           //查找nodeID的前继询问其后继是否为nodeID
-           
             while(Integer.parseInt(makeConnection(knownhostIP, knownhostport, "findSucOfPred/"+nodeID))==nodeID) {
                 md.reset();
                 md.update(hashBytes);
@@ -253,7 +238,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
 } 
 
     public static String makeConnection(String ip, String port, String message) throws Exception {
-        //System.out.println("Making connection to " + ip + " at " +port + " to " + message);
             if(myIP.equals(ip) && myport.equals(port)) {
             	String response = considerInput(message);
                 return response;
@@ -263,11 +247,10 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                  DataOutputStream out = new DataOutputStream(sendingSocket.getOutputStream());
                  BufferedReader inFromServer = new BufferedReader(new InputStreamReader(sendingSocket.getInputStream()));
 
-                 //System.out.println("Sending request: " + message + " to " + ip + " at " + port);
                  out.writeBytes(message + "\n");
 
                  String result = inFromServer.readLine();
-                 //System.out.println("From Server: " + result);
+                 
                  out.close();
                  inFromServer.close();
                  sendingSocket.close(); 
@@ -277,15 +260,14 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
 
 
     public void run() {
-        if (this.ID == 0) { //ID==0时，这是网络的第一个加入的节点的构造部分
-           
+        if (this.ID == 0) { //ID==0时，第一个加入的节点的入口        
             System.out.println("正在创建路由表 ... ");
-            //构造路由表的index列
+
             for (int i = 1; i <= m; i++) {
                 finger[i] = new FingerTable();
                 finger[i].setStart((me.getID() + (int)Math.pow(2,i-1)) % numDHT);
             }
-            //设置每一行的信息的起始点
+
             for (int i = 1; i < m; i++) {
                 finger[i].setInterval(finger[i].getStart(),finger[i+1].getStart()); 
             }
@@ -302,15 +284,13 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             	System.out.println("开始创建节点列表...");
 				nodeList.add(me);
 				System.out.println("节点列表创建完成");
-				//printNodeInfo();
 			} catch (Exception e1) {}
             
             try { 
                 finishJoiningFirst(me.getID());//释放对象锁
             } catch (Exception e) {}
         }       
-        else if (this.ID == -1) {//ID==1时，这是网络非第一个加入的节点的构造部分
-
+        else if (this.ID == -1) {//ID==1时，非第一个加入的节点的入口
             System.out.println("正在创建路由表 ...");
             for (int i = 1; i <= m; i++) {
                 finger[i] = new FingerTable();
@@ -326,13 +306,12 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             }
             System.out.println("空表创建完成....");
             System.out.println();
-            //printFingerInfo();
             try{    
             	    System.out.println("开始初始化路由表.....");
-                    init_finger_table(pred);//初始化路由表，即是新加入节点发现其他节点的过程
+                    init_finger_table(pred);
                     System.out.println("路由表初始化完成.....");
                     printFingerInfo();
-                    update_others();//更新其他节点的路由，即是新加入节点被发现的过程
+                    update_others();
                     System.out.println("其它节点路由表已更新");
                     System.out.println();
                     System.out.println("开始构建节点列表...");
@@ -340,8 +319,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                     System.out.println("节点列表创建完成");
                     updateOthersList();
                     System.out.println("其它节点的列表已更新");
-                    //noticeOthers("printNum/");
-                    //noticeOthers("printNodeInfo/");
             } catch (Exception e) {
             	e.printStackTrace();
             }
@@ -361,14 +338,13 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
 
                 outToClient.writeBytes(response + "\n");	
             } catch (Exception e) {
-                //System.out.println("[系统提示]:"+"线程无法服务连接");
-            	System.out.println(e.getStackTrace());
+                System.out.println("[系统提示]:"+"线程无法服务连接");
+            	//System.out.println(e.getStackTrace());
             }
 
         }
     }
 
-    //处理请求（无修改）
     public static String considerInput(String received) throws Exception {
         String[] tokens = received.split("/");
         String outResponse = "";
@@ -564,7 +540,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
 
             String request = "updateFing/" + me.getID() + "/" + me.getIP() + "/" + me.getPort() + "/" + i;  
             makeConnection(p.getIP(),p.getPort(),request);
-            //printFingerInfo();
         }
     }
     //更新路由表
@@ -579,20 +554,16 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                    normalInterval = 0;
                else normalInterval = 1;
 
-               //System.out.println("here!" + s.getID() + " between " + myID + " and " + nextID);
-
                if ( ((normalInterval==1 && (s.getID() >= myID && s.getID() < nextID)) ||
                            (normalInterval==0 && (s.getID() >= myID || s.getID() < nextID)))
                        && (me.getID() != s.getID() ) ) {
-
-                   //	System.out.println("there!");
 
                    finger[i].setSuccessor(s);
                    p = pred;
 
                    String request = "updateFing/" + s.getID() + "/" + s.getIP() + "/" + s.getPort() + "/" + i;  
                    makeConnection(p.getIP(),p.getPort(),request);
-                       }
+                   }
     }
     //设置当前节点的前继节点
     public static void setPredecessor(Node n) // throws RemoteException
@@ -628,12 +599,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
         if (myID >= succID)
             normalInterval = 0;
 
-
-        //	System.out.println("id ... " + id + " my " + myID + " succ " + succID + " " );
-
         while ((normalInterval==1 && (id <= myID || id > succID)) ||
                 (normalInterval==0 && (id <= myID && id > succID))) {
-
 
             String request = "closetPred/" + id ;
             String result = makeConnection(n.getIP(),n.getPort(),request);
@@ -653,17 +620,15 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                 normalInterval = 0;
             else normalInterval = 1;
                 }
-        //System.out.println("Returning n" + n.getID());
-
         return n;
     }
     //获取当前节点的后继节点
-    public static Node getSuccessor() //throws RemoteException
+    public static Node getSuccessor() 
     {
         return finger[1].getSuccessor();
     }
     //获取当前节点路由表中距离目标id最近的节点
-    public static Node closet_preceding_finger(int id) //throws RemoteException 
+    public static Node closet_preceding_finger(int id) 
     {
         int normalInterval = 1;
         int myID = me.getID();
@@ -738,13 +703,11 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     public static String loadNode(){
 	     Node node =null;
 	     String results="";
-	     //System.out.println("装载开始！");
 	     for(int i=0;i<nodeList.size()-1;i++) {
 	    	  node = nodeList.get(i);
 		      results=results+node.getID() + "/" + node.getIP() + "/" + node.getPort()+"/";
 	     }
 	     results=results+nodeList.get(nodeList.size()-1).getID() + "/" + nodeList.get(nodeList.size()-1).getIP() + "/" + nodeList.get(nodeList.size()-1).getPort()+"/";
-	     //System.out.println("装载完成！");
 	     return results;
     }
     //新增：提供本节点的路由表中的节点信息给其它节点
@@ -779,6 +742,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     public static void printNum(){
     	System.out.println("当前节点个数 ："+nodeList.size()+"个");
     }
+    //新增：打印路由表信息
     public static void printFingerInfo(){
     	String results="";
     	System.out.println("*****路由表信息*****");
@@ -790,7 +754,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     public static void printNodeInfo() throws Exception{
     	Iterator<Node> iterator = nodeList.iterator();
     	String string="";
-    	//System.out.println();
     	System.out.println("*****节点列表*****");
     	if(nodeList.size()==0)
     		System.out.println("列表为空！");
