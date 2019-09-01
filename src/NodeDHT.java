@@ -51,14 +51,14 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
          
             InetAddress mIP = InetAddress.getLocalHost();
             myIP=mIP.getHostAddress();
-            System.out.println("本节点 IP地址: " + myIP );
+            System.out.println("本节点IP地址: " + myIP );
 
             int initInfo = getFisrtNodeInfo(myIP,myport);//只返回一个字段即NodeID
             //构造当前节点的node类并存储
             me = new Node(initInfo,myIP,myport);
 
             pred=me;
-            System.out.println("节点ID ： "+me.getID() + ". 前继节点ID ： " +pred.getID()+"/n");
+            System.out.println("节点ID:"+me.getID() + "   前继节点ID:" +pred.getID());
             //启动DHT线程，传入参数为0,负责构造路由表信息(只有自己的路由表)
             Socket temp = null;
             Runnable runnable = new NodeDHT(temp,0);
@@ -155,7 +155,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
 
     public static void finishJoining(int id) throws Exception{
     	System.out.println();
-        System.out.println("*** 节点 " +id + " 已经在DHT网络中！.");
+        System.out.println("[系统提示]:"+"节点 " +id + "已经在DHT网络中！.");
         printNum();
 		printNodeInfo();
         synchronized (object) {
