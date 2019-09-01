@@ -558,14 +558,9 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                 id = id + numDHT; 
 
             p = find_predecessor(id);
-            
-//            System.out.print("id:"+id+" ; ");
-//            System.out.println("p:"+p);
-
 
             String request = "updateFing/" + me.getID() + "/" + me.getIP() + "/" + me.getPort() + "/" + i;  
             makeConnection(p.getIP(),p.getPort(),request);
-            printFingerInfo();
         }
     }
     //更新路由表
