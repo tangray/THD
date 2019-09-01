@@ -766,8 +766,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
     public static void printFingerInfo(){
     	String results="";
     	System.out.println("*****路由表信息*****");
-    	for(int i=1;i<=m+1;i++) {
-		      System.out.println(results+finger[i].getStart()+finger[i].getSuccessor().getID());
+    	for(int i=1;i<=m;i++) {
+		      System.out.println(results+"Index["+finger[i].getStart()+"]   "+"后继节点ID: "+finger[i].getSuccessor().getID());
 	     }
     }
     //新增：打印节点信息
