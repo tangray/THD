@@ -114,7 +114,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             thread.start();
             //监听端口，等待其他节点或者客户端的请求
             int count = 1;
-            System.out.println("正在等待其它节点请求...");
+            //System.out.println("正在等待其它节点请求...");
             int port = Integer.parseInt(myport);
 
             try {
@@ -128,8 +128,8 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                    Socket newCon = serverSocket.accept();
                    Runnable runnable2 = new NodeDHT(newCon,count++);
                    Thread t = new Thread(runnable2);
-                   System.out.println();
-                   System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
+                   //System.out.println();
+                   //System.out.println("*** 有来自其它节点的请求, 服务开始....*** ");
                    t.start();
             }
         }
