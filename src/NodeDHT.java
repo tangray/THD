@@ -724,6 +724,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
 		      results=results+node.getID() + "/" + node.getIP() + "/" + node.getPort()+"/";
 	     }
 	     results=results+nodeList.get(nodeList.size()-1).getID() + "/" + nodeList.get(nodeList.size()-1).getIP() + "/" + nodeList.get(nodeList.size()-1).getPort()+"/";
+	     System.out.println("装载完成！");
 	     return results;
     }
     //新增：提供本节点的路由表中的节点信息给其它节点
