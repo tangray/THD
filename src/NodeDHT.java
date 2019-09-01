@@ -56,7 +56,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             int initInfo = getFisrtNodeInfo(myIP,myport);//只返回一个字段即NodeID
             //构造当前节点的node类并存储
             me = new Node(initInfo,myIP,myport);
-
             pred=me;
             System.out.println("节点ID:"+me.getID() + "   前继节点ID:" +pred.getID());
             //启动DHT线程，传入参数为0,负责构造路由表信息(只有自己的路由表)
@@ -107,7 +106,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             String result=makeConnection(knownhostIP, knownhostport, "findPred/"+initInfo);
             String[] tokens = result.split("/");
             pred = new Node(Integer.parseInt(tokens[0]),tokens[1],tokens[2]);
-            System.out.println("本节点 ID : "+me.getID() + ". 前继节点 ID: " +pred.getID());
+            System.out.println("本节点 ID:"+me.getID() + "   前继节点 ID:" +pred.getID());
             //启动DHT线程，传入参数为1,负责构造路由表信息
             Socket temp = null;
             Runnable runnable = new NodeDHT(temp,-1);
@@ -287,13 +286,12 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             }
             System.out.println("路由表创建完成，此节点是网络中唯一节点！");
             System.out.println();
-            printFingerInfo();
-            System.out.println();
+           
             try {
             	System.out.println("开始创建节点列表...");
 				nodeList.add(me);
 				System.out.println("节点列表创建完成");
-				printNodeInfo();
+				//printNodeInfo();
 			} catch (Exception e1) {}
             
             try { 
