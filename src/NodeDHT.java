@@ -295,6 +295,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                     finger[i].setSuccessor(me);
             }
             System.out.println("路由表创建完成，此节点是网络中唯一节点！");
+            printFingerInfo();
             System.out.println();
            
             try {
@@ -330,6 +331,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
             	    System.out.println("开始初始化路由表.....");
                     init_finger_table(pred);//初始化路由表，即是新加入节点发现其他节点的过程
                     System.out.println("路由表初始化完成.....");
+                    printFingerInfo();
                     update_others();//更新其他节点的路由，即是新加入节点被发现的过程
                     System.out.println("其它节点路由表已更新");
                     System.out.println();
@@ -562,6 +564,7 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
 
             String request = "updateFing/" + me.getID() + "/" + me.getIP() + "/" + me.getPort() + "/" + i;  
             makeConnection(p.getIP(),p.getPort(),request);
+            printFingerInfo();
         }
     }
     //更新路由表
@@ -590,7 +593,6 @@ public class NodeDHT implements Runnable //extends UnicastRemoteObject implement
                    String request = "updateFing/" + s.getID() + "/" + s.getIP() + "/" + s.getPort() + "/" + i;  
                    makeConnection(p.getIP(),p.getPort(),request);
                        }
-               //printAllFingers();
     }
     //设置当前节点的前继节点
     public static void setPredecessor(Node n) // throws RemoteException
