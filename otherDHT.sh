@@ -1,4 +1,4 @@
-java -cp bin/ NodeDHT 2033 12
+java -cp bin/ NodeDHT 10.108.150.217 2033 2050 12
 
 
 #TO start the client
