@@ -454,8 +454,8 @@ public class NodeDHT implements Runnable
         	delete(deletenode);
         	quit_update_finger_table(updatenode,Integer.parseInt(tokens[7]));
         	System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
-        	printFingerInfo();
-        	printNodeInfo();
+        	//printFingerInfo();
+        	//printNodeInfo();
         }
         //新添加
         else if (tokens[0].equals("printNum")) {
