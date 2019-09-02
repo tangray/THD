@@ -338,13 +338,32 @@ public class NodeDHT implements Runnable
                 if(str1.equals("exit")){
                     try {
 						beforeExit();
-						System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
-						printFingerInfo();
-						printNodeInfo();
+						if(pred==me) {
+							System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络,网络已关闭");
+						}
+						else {
+							System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
+							printFingerInfo();
+							printNodeInfo();
+						}		   
 					} catch (Exception e) {
 						System.out.println("节点退出异常！");
 					}
                     break;
+                }
+                else if(str1.equals("printnodelist")) {
+                	try {
+						printNodeInfo();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                }
+                else if(str1.equals("printfinger")) {
+                	printFingerInfo();
+                }
+                else if(str1.equals("printnum")) {
+                	printNum();
                 }
             }
             scan.close();
