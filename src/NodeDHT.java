@@ -62,7 +62,11 @@ public class NodeDHT implements Runnable
             Runnable runnable = new NodeDHT(temp,0);
             Thread thread = new Thread(runnable);
             thread.start();
-
+            //节点退出线程
+            Runnable exitRunnable = new NodeDHT(temp,-2);
+            Thread exitThread = new Thread(exitRunnable);
+            exitThread.start();
+            
             int count = 1;
             int port = Integer.parseInt(args[0]);
             try {
@@ -327,6 +331,22 @@ public class NodeDHT implements Runnable
                     finishJoining(me.getID());//
             } catch (Exception e) {}
         }
+        else if (this.ID == -2) {
+            Scanner scan = new Scanner(System.in);
+            while (scan.hasNext()) {
+                String str1 = scan.next();
+                if(str1.equals("exit")){
+                    try {
+						beforeExit();
+					} catch (Exception e) {
+						System.out.println("节点退出异常！");
+					}
+                    break;
+                }
+            }
+            scan.close();
+            System.exit(0);
+        }
         else {//ID等于其他值时，进行的是信息交互的部分
             try {
                 BufferedReader inFromClient =new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -344,7 +364,20 @@ public class NodeDHT implements Runnable
 
         }
     }
-
+    
+    public void beforeExit() throws Exception{
+    	makeConnection(finger[1].getSuccessor().getIP(), finger[1].getSuccessor().getPort(), "updelete/"+pred.getID()+"/"+pred.getIP()+"/"+pred.getPort());
+        System.out.println("Node " + me.getID() + " exit ... ");
+    }
+    
+    public static void quit_update_finger_table(Node s, int exitID){
+        for(int i = 1; i <= m; i++){
+            if (finger[i].getSuccessor().getID() == exitID){
+                finger[i].setSuccessor(s);
+            }
+        }
+    }
+    
     public static String considerInput(String received) throws Exception {
         String[] tokens = received.split("/");
         String outResponse = "";
@@ -371,6 +404,19 @@ public class NodeDHT implements Runnable
             int id=Integer.parseInt(tokens[1]);
             Node newNode = find_predecessor(id);
             outResponse = newNode.getID() + "/" + newNode.getIP() + "/" + newNode.getPort() ;
+        }
+        //新添加
+        else if (tokens[0].equals("updelete")) {
+        	delete(pred);//后继节点的列表中删除前继
+        	noticeOthers("delete/"+pred.getID()+"/"+pred.getIP()+"/"+pred.getPort()+"/"+me.getID()+"/"+me.getIP()+"/"+me.getPort()+"/"+pred.getID());//通知剩余节点删除其前继
+        	setPredecessor(new Node(Integer.parseInt(tokens[1]),tokens[2],tokens[3]));
+        }
+        //新添加
+        else if (tokens[0].equals("delete")) {
+        	Node deletenode = new Node(Integer.parseInt(tokens[1]),tokens[2],tokens[3]);
+        	Node updatenode = new Node(Integer.parseInt(tokens[4]),tokens[5],tokens[6]);
+        	delete(deletenode);
+        	quit_update_finger_table(updatenode,Integer.parseInt(tokens[7]));
         }
         //新添加
         else if (tokens[0].equals("printNum")) {
@@ -762,5 +808,9 @@ public class NodeDHT implements Runnable
     		string="节点ID:"+node.getID()+"  IP地址："+node.getIP()+"  端口号： "+node.getPort()+" ";
     		System.out.println(string);
     	}
+    }
+    //新增：删除节点
+    public static void delete(Node node){
+    	nodeList.remove(node);
     }
 }
