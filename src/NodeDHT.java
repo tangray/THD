@@ -339,12 +339,11 @@ public class NodeDHT implements Runnable
                     try {
 						beforeExit();
 						if(pred==me) {
-							System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络,网络已关闭");
+							System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
+							System.out.println("[系统提示]: 网络已关闭");
 						}
 						else {
 							System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
-							printFingerInfo();
-							printNodeInfo();
 						}		   
 					} catch (Exception e) {
 						System.out.println("节点退出异常！");
