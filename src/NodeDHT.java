@@ -734,7 +734,7 @@ public class NodeDHT implements Runnable
         return me;
     }
     //新增：更新nodeList
-    public static void updateList(Node node) throws Exception {
+    public synchronized static void updateList(Node node) throws Exception {
     	nodeList.add(node);
     	System.out.println();
     	System.out.println("[系统提示]： "+"新节点 "+node.getID()+"加入DHT网络");
@@ -742,17 +742,16 @@ public class NodeDHT implements Runnable
     	printNum();
     }
     //新增：更新其它节点的nodeList
-    public static void updateOthersList() throws Exception {
+    public synchronized static void updateOthersList() throws Exception {
     	Iterator<Node> iterator = nodeList.iterator();
-    	String string=null;
     	while(iterator.hasNext()) {
     		Node node =iterator.next();
     		if(node==me)
     			continue;
-    	    string = makeConnection(node.getIP(),node.getPort(),"updateList/"+me.getID()+"/"+me.getIP()+"/"+me.getPort());
+    	    makeConnection(node.getIP(),node.getPort(),"updateList/"+me.getID()+"/"+me.getIP()+"/"+me.getPort());
     	}
     }
-    public static void buildNodeList() throws Exception{
+    public synchronized static void buildNodeList() throws Exception{
     	nodeList.add(me);
     	String str = makeConnection(knownhostIP, knownhostport, "load/");
     	getNode(str);
@@ -770,7 +769,7 @@ public class NodeDHT implements Runnable
     	System.out.println("执行到此----");
     }*/
     //新增：处理返回的m个node信息并生成arraylist(路由表中最多只有m个node)
-    public static void getNode(String str) {
+    public synchronized static void getNode(String str) {
     	// HashSet<Node> list=new HashSet<Node>(); 
     	 String[] tokens = str.split("/");
     	 Node newNode=null;
@@ -785,7 +784,7 @@ public class NodeDHT implements Runnable
             nodeList.add(finger[i].getSuccessor());
          }
     }*/
-    public static String loadNode(){
+    public synchronized static String loadNode(){
 	     Node node =null;
 	     String results="";
 	     for(int i=0;i<nodeList.size()-1;i++) {
@@ -814,7 +813,7 @@ public class NodeDHT implements Runnable
     	return result;
     }*/
     //新增：广播消息
-    public static void noticeOthers(String message) throws Exception{
+    public synchronized static void noticeOthers(String message) throws Exception{
     	Iterator<Node> iterator = nodeList.iterator();
     	while(iterator.hasNext()) {
     		Node node =iterator.next();
@@ -837,7 +836,7 @@ public class NodeDHT implements Runnable
 	     }
     }
     //新增：打印节点信息
-    public static void printNodeInfo() throws Exception{
+    public synchronized static void printNodeInfo() throws Exception{
     	Iterator<Node> iterator = nodeList.iterator();
     	String string="";
     	System.out.println("*****节点列表*****");
@@ -850,7 +849,7 @@ public class NodeDHT implements Runnable
     	}
     }
     //新增：删除节点
-    public static void delete(Node node){
+    public synchronized static void delete(Node node){
     	nodeList.remove(nodeList.indexOf(node));
     }
 }
