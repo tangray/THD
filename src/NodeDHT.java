@@ -851,7 +851,7 @@ public class NodeDHT implements Runnable
     }
     //新增：删除节点
     public synchronized static void delete(Node node){
-    	nodeList.remove(node);
+    	nodeList.remove((Node)node);
     }
     //新增：增加节点
     public synchronized static void add(Node node){
