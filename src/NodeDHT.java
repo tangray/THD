@@ -109,7 +109,11 @@ public class NodeDHT implements Runnable
             Runnable runnable = new NodeDHT(temp,-1);
             Thread thread = new Thread(runnable);
             thread.start();
-
+            //节点退出线程
+            Runnable exitRunnable = new NodeDHT(temp,-2);
+            Thread exitThread = new Thread(exitRunnable);
+            exitThread.start();
+            
             int count = 1;
             int port = Integer.parseInt(myport);
             try {
