@@ -435,7 +435,7 @@ public class NodeDHT implements Runnable
         //新添加
         else if (tokens[0].equals("updeletesuc")) {
         	delete(pred);//后继节点的列表中删除前继
-        	System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
+        	System.out.println("[系统提示]: 节点 "+pred.getID()+"已经退出DHT网络");
         	setPredecessor(me);
         	for(int i=1;i<=m;i++) {
         		finger[i].setSuccessor(me);
