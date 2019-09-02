@@ -810,6 +810,7 @@ public class NodeDHT implements Runnable
     			continue;
     		String string = makeConnection(node.getIP(),node.getPort(),message);
     	}
+    	System.out.println("已通知所有节点");
     }
     //新增：打印节点个数
     public static void printNum(){
