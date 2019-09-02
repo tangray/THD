@@ -27,7 +27,7 @@ public class NodeDHT implements Runnable
     private static String knownhostport;
     private static String myIP;
     private static String myport;
-    private static ArrayList<Node> nodeList = new ArrayList<Node>();
+    private static Vector<Node> nodeList = new Vector<Node>();
     private static List<Word> wordList = new ArrayList<Word>();
 
     public NodeDHT(Socket s, int i) {
@@ -290,7 +290,7 @@ public class NodeDHT implements Runnable
            
             try {
             	System.out.println("开始创建节点列表...");
-				nodeList.add(me);
+            	add(me);
 				System.out.println("节点列表创建完成");
 			} catch (Exception e1) {}
             
@@ -735,7 +735,7 @@ public class NodeDHT implements Runnable
     }
     //新增：更新nodeList
     public synchronized static void updateList(Node node) throws Exception {
-    	nodeList.add(node);
+    	add(node);
     	System.out.println();
     	System.out.println("[系统提示]： "+"新节点 "+node.getID()+"加入DHT网络");
     	printNodeInfo();
@@ -752,7 +752,7 @@ public class NodeDHT implements Runnable
     	}
     }
     public synchronized static void buildNodeList() throws Exception{
-    	nodeList.add(me);
+    	add(me);
     	String str = makeConnection(knownhostIP, knownhostport, "load/");
     	getNode(str);
     }
@@ -775,7 +775,7 @@ public class NodeDHT implements Runnable
     	 Node newNode=null;
     	 for(int i=1;i<=(tokens.length/3);i++) {
     	      newNode=new Node(Integer.parseInt(tokens[0+3*(i-1)]),tokens[1+3*(i-1)],tokens[2+3*(i-1)]);
-    	      nodeList.add(newNode);
+    	      add(newNode);
     	 }
     }
     //新增：将本节点的路由表信息中的节点信息加入nodeList    
@@ -851,5 +851,9 @@ public class NodeDHT implements Runnable
     //新增：删除节点
     public synchronized static void delete(Node node){
     	nodeList.remove(nodeList.indexOf(node));
+    }
+    //新增：增加节点
+    public synchronized static void add(Node node){
+    	nodeList.add(node);
     }
 }
