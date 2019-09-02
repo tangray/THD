@@ -338,6 +338,9 @@ public class NodeDHT implements Runnable
                 if(str1.equals("exit")){
                     try {
 						beforeExit();
+						System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
+						printFingerInfo();
+						printNodeInfo();
 					} catch (Exception e) {
 						System.out.println("节点退出异常！");
 					}
@@ -367,7 +370,6 @@ public class NodeDHT implements Runnable
     
     public void beforeExit() throws Exception{
     	makeConnection(finger[1].getSuccessor().getIP(), finger[1].getSuccessor().getPort(), "updelete/"+pred.getID()+"/"+pred.getIP()+"/"+pred.getPort());
-        System.out.println("Node " + me.getID() + " exit ... ");
     }
     
     public static void quit_update_finger_table(Node s, int exitID){
@@ -417,6 +419,9 @@ public class NodeDHT implements Runnable
         	Node updatenode = new Node(Integer.parseInt(tokens[4]),tokens[5],tokens[6]);
         	delete(deletenode);
         	quit_update_finger_table(updatenode,Integer.parseInt(tokens[7]));
+        	System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
+        	printFingerInfo();
+        	printNodeInfo();
         }
         //新添加
         else if (tokens[0].equals("printNum")) {
