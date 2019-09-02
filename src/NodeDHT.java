@@ -376,8 +376,8 @@ public class NodeDHT implements Runnable
 
                 outToClient.writeBytes(response + "\n");	
             } catch (Exception e) {
-                System.out.println("[系统提示]:"+"线程无法服务连接");
-            	//System.out.println(e.getStackTrace());
+                //System.out.println("[系统提示]:"+"线程无法服务连接");
+            	e.printStackTrace();
             }
 
         }
