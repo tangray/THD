@@ -341,14 +341,7 @@ public class NodeDHT implements Runnable
                 String str1 = scan.next();
                 if(str1.equals("exit")){
                     try {
-						beforeExit();
-						if(pred==me) {
-							System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
-							System.out.println("[系统提示]: 网络已关闭");
-						}
-						else {
-							System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
-						}		   
+						beforeExit();	   
 					} catch (Exception e) {
 						System.out.println("节点退出异常！");
 					}
@@ -391,7 +384,17 @@ public class NodeDHT implements Runnable
     }
     
     public void beforeExit() throws Exception{
-    	makeConnection(finger[1].getSuccessor().getIP(), finger[1].getSuccessor().getPort(), "updelete/"+pred.getID()+"/"+pred.getIP()+"/"+pred.getPort());
+    	if(nodeList.size()==1) {
+    		System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
+			System.out.println("[系统提示]: 网络已关闭");
+    	}
+    	else if(nodeList.size()==2) {
+    		makeConnection(finger[1].getSuccessor().getIP(), finger[1].getSuccessor().getPort(), "updeletesuc/");
+    		System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
+    	}
+    	else {
+    		makeConnection(finger[1].getSuccessor().getIP(), finger[1].getSuccessor().getPort(), "updelete/"+pred.getID()+"/"+pred.getIP()+"/"+pred.getPort());
+    	}
     }
     
     public static void quit_update_finger_table(Node s, int exitID){
@@ -428,6 +431,15 @@ public class NodeDHT implements Runnable
             int id=Integer.parseInt(tokens[1]);
             Node newNode = find_predecessor(id);
             outResponse = newNode.getID() + "/" + newNode.getIP() + "/" + newNode.getPort() ;
+        }
+        //新添加
+        else if (tokens[0].equals("updeletesuc")) {
+        	delete(pred);//后继节点的列表中删除前继
+        	System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
+        	setPredecessor(me);
+        	for(int i=1;i<=m;i++) {
+        		finger[i].setSuccessor(me);
+        	}
         }
         //新添加
         else if (tokens[0].equals("updelete")) {
@@ -808,7 +820,7 @@ public class NodeDHT implements Runnable
     		Node node =iterator.next();
     		if(node==me)
     			continue;
-    		String string = makeConnection(node.getIP(),node.getPort(),message);
+    		makeConnection(node.getIP(),node.getPort(),message);
     	}
     	System.out.println("已通知所有节点");
     }
