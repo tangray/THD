@@ -816,6 +816,6 @@ public class NodeDHT implements Runnable
     }
     //新增：删除节点
     public static void delete(Node node){
-    	nodeList.remove(node);
+    	nodeList.remove(nodeList.indexOf(node));
     }
 }
