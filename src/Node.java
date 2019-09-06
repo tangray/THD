@@ -11,7 +11,7 @@ public class Node {
     	Node node=null;
     	if(obj instanceof Node)
     		node=(Node)obj;
-    	if(node.getID()==myID&&node.getIP()==myIP&&node.getPort()==myPort)
+    	if(node.getID()==myID&&node.getIP().equals(myIP)&&node.getPort().equals(myPort))
     		return true;
     	else return false;
     }
