@@ -361,6 +361,9 @@ public class NodeDHT implements Runnable
                 else if(str1.equals("printnum")) {
                 	printNum();
                 }
+                else {
+                	System.out.print("命令格式不正确！请重新输入");
+                }
             }
             scan.close();
             System.exit(0);
@@ -851,7 +854,7 @@ public class NodeDHT implements Runnable
     }
     //新增：删除节点
     public synchronized static void delete(Node node){
-    	nodeList.remove((Node)node);
+    	nodeList.remove(node);
     }
     //新增：增加节点
     public synchronized static void add(Node node){
