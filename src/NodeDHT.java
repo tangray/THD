@@ -351,7 +351,6 @@ public class NodeDHT implements Runnable
                 	try {
 						printNodeInfo();
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
                 }
@@ -363,6 +362,9 @@ public class NodeDHT implements Runnable
                 }
                 else if(str1.equals("printpred")) {
                 	printPred();
+                }
+                else if(str1.equals("printsuc")) {
+                	printSuccessor();
                 }
                 else {
                 	System.out.print("命令格式不正确！请重新输入");
