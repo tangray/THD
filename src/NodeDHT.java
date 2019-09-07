@@ -361,6 +361,9 @@ public class NodeDHT implements Runnable
                 else if(str1.equals("printnum")) {
                 	printNum();
                 }
+                else if(str1.equals("printpred")) {
+                	printPred();
+                }
                 else {
                 	System.out.print("命令格式不正确！请重新输入");
                 }
@@ -436,7 +439,7 @@ public class NodeDHT implements Runnable
             outResponse = newNode.getID() + "/" + newNode.getIP() + "/" + newNode.getPort() ;
         }
         //新添加
-        else if (tokens[0].equals("updeletesuc")) {
+        else if (tokens[0].equals("updeletesuc")) {//只有两个节点的退出
         	delete(pred);//后继节点的列表中删除前继
         	System.out.println("倒数第二个节点退出之后还剩"+nodeList.size());
         	System.out.println("[系统提示]: 节点 "+pred.getID()+"已经退出DHT网络");
@@ -830,6 +833,10 @@ public class NodeDHT implements Runnable
     //新增：打印节点个数
     public static void printNum(){
     	System.out.println("当前节点个数 ："+nodeList.size()+"个");
+    }
+    //新增：打印前继
+    public static void printPred() {
+    	System.out.println("本节点的前继节点是 ："+pred.getID());
     }
     //新增：打印路由表信息
     public static void printFingerInfo(){
