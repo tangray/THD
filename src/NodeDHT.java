@@ -397,11 +397,11 @@ public class NodeDHT implements Runnable
 			System.out.println("[系统提示]: 网络已关闭");
     	}
     	else if(nodeList.size()==2) {
-    		makeConnection(finger[1].getSuccessor().getIP(), finger[1].getSuccessor().getPort(), "updeletesuc/");
-    		System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
+    		makeConnection(finger[1].getSuccessor().getIP(), finger[1].getSuccessor().getPort(), "quitOfTwoNodes/");
+    		//System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
     	}
     	else {
-    		makeConnection(finger[1].getSuccessor().getIP(), finger[1].getSuccessor().getPort(), "updelete/"+pred.getID()+"/"+pred.getIP()+"/"+pred.getPort());
+    		makeConnection(finger[1].getSuccessor().getIP(), finger[1].getSuccessor().getPort(), "quitOfManyNodes/"+pred.getID()+"/"+pred.getIP()+"/"+pred.getPort());
     	}
     }
     
@@ -441,30 +441,31 @@ public class NodeDHT implements Runnable
             outResponse = newNode.getID() + "/" + newNode.getIP() + "/" + newNode.getPort() ;
         }
         //新添加
-        else if (tokens[0].equals("updeletesuc")) {//只有两个节点的退出
+        else if (tokens[0].equals("quitOfTwoNodes")) {//只有两个节点的退出
         	delete(pred);//后继节点的列表中删除前继
-        	System.out.println("倒数第二个节点退出之后还剩"+nodeList.size());
-        	System.out.println("[系统提示]: 节点 "+pred.getID()+"已经退出DHT网络");
         	setPredecessor(me);
         	for(int i=1;i<=m;i++) {
         		finger[i].setSuccessor(me);
         	}
+        	System.out.println("\n"+"[系统提示]: 节点 "+pred.getID()+"已经退出DHT网络");
+        	printNum();
         }
         //新添加
-        else if (tokens[0].equals("updelete")) {
+        else if (tokens[0].equals("quitOfManyNodes")) {//多于两个节点时的退出
         	delete(pred);//后继节点的列表中删除前继
-        	noticeOthers("delete/"+pred.getID()+"/"+pred.getIP()+"/"+pred.getPort()+"/"+me.getID()+"/"+me.getIP()+"/"+me.getPort()+"/"+pred.getID());//通知剩余节点删除其前继
-        	setPredecessor(new Node(Integer.parseInt(tokens[1]),tokens[2],tokens[3]));
+        	noticeOthers("deleteNodeOfNodelist/"+pred.getID()+"/"+pred.getIP()+"/"+pred.getPort()+"/"+me.getID()+"/"+me.getIP()+"/"+me.getPort()+"/"+pred.getID());//通知剩余节点删除其前继
+        	setPredecessor(new Node(Integer.parseInt(tokens[1]),tokens[2],tokens[3]));//将前继设为删除节点的前继
+        	System.out.println("\n"+"[系统提示]: 节点 "+pred.getID()+"已经退出DHT网络");
+        	printNum();
         }
         //新添加
-        else if (tokens[0].equals("delete")) {
+        else if (tokens[0].equals("deleteNodeOfNodelist")) {
         	Node deletenode = new Node(Integer.parseInt(tokens[1]),tokens[2],tokens[3]);
         	Node updatenode = new Node(Integer.parseInt(tokens[4]),tokens[5],tokens[6]);
         	delete(deletenode);
         	quit_update_finger_table(updatenode,Integer.parseInt(tokens[7]));
-        	System.out.println("[系统提示]: 节点 "+me.getID()+"已经退出DHT网络");
-        	//printFingerInfo();
-        	//printNodeInfo();
+        	System.out.println("\n"+"[系统提示]: 节点 "+tokens[7]+"已经退出DHT网络");
+            printNum();
         }
         //新添加
         else if (tokens[0].equals("printNum")) {
@@ -482,10 +483,6 @@ public class NodeDHT implements Runnable
         else if (tokens[0].equals("load")) {
         	outResponse=loadNode();
         }
-        //新添加
-        /*else if (tokens[0].equals("remoteNode")) {
-        	outResponse=remoteNode();
-        }*/
         //新添加
         else if (tokens[0].equals("updateList")) {
         	Node newnode = new Node(Integer.parseInt(tokens[1]),tokens[2],tokens[3]);
@@ -670,10 +667,8 @@ public class NodeDHT implements Runnable
         return pred;
     }
     //通过当前节点的路由表查询某个NID的后继节点
-    public static Node find_successor(int id) throws Exception //RemoteException,
-           {
-               //System.out.println("Visiting here at Node <" + me.getID()+"> to find successor of key ("+ id +")"); 
-
+    public static Node find_successor(int id) throws Exception 
+           { 
                Node n;
                n = find_predecessor(id);
 
@@ -779,7 +774,6 @@ public class NodeDHT implements Runnable
     }*/
     //新增：处理返回的m个node信息并生成arraylist(路由表中最多只有m个node)
     public synchronized static void getNode(String str) {
-    	// HashSet<Node> list=new HashSet<Node>(); 
     	 String[] tokens = str.split("/");
     	 Node newNode=null;
     	 for(int i=1;i<=(tokens.length/3);i++) {
