@@ -838,6 +838,10 @@ public class NodeDHT implements Runnable
     public static void printPred() {
     	System.out.println("本节点的前继节点是 ："+pred.getID());
     }
+    //新增：打印后继
+    public static void printSuccessor() {
+    	System.out.println("本节点的后继节点是 ："+finger[1].getSuccessor().getID());
+    }
     //新增：打印路由表信息
     public static void printFingerInfo(){
     	String results="";
