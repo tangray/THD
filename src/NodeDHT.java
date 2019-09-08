@@ -31,7 +31,7 @@ public class NodeDHT implements Runnable
     private static String myIP;
     private static String myport;
     private static Vector<Node> nodeList = new Vector<Node>();
-    //private static List<Identification> IdentificationList = new ArrayList<Identification>();
+    private static List<Identification> IdentificationList = new ArrayList<Identification>();
     private static HashMap<Identification, String> IdentMap= new HashMap<Identification, String>();
 
     public NodeDHT(Socket s, int i) {
@@ -356,7 +356,7 @@ public class NodeDHT implements Runnable
         else if (this.ID == -2) {//指令集
             Scanner scan = new Scanner(System.in);
             while (scan.hasNext()) {
-                String str1 = scan.next();
+                String str1 = scan.nextLine();
                 if(str1.equals("exit")){
                     try {
 						beforeExit();	   
@@ -387,39 +387,39 @@ public class NodeDHT implements Runnable
                 else if(str1.startsWith("insert")) {
                 	String fullIdent=null;
                 	String url=null;
-                	Pattern pat=Pattern.compile("(insert)([\\s]+)([.]+)([\\s]+)([.]+)");
-                	Matcher matcher = pat.matcher(str1);
-                	if (matcher.find()) {
-                		fullIdent=matcher.group(3);
-                		url=matcher.group(5);
-                	}
-                	
-                	try {
-						InsertIdentification(fullIdent, url);
-					} catch (Exception e) {}
+                	String[] tokens = str1.split("[\\s]+");
+                	fullIdent=tokens[1];
+                	url=tokens[2];
+                
+					try {
+							InsertIdentification(fullIdent, url);							
+							//System.out.println(IdentMap.entrySet());
+						} catch (Exception e) {}
+
                 }
                 else if(str1.startsWith("geturl")) {
                 	String fullIdent=null;
-                	Pattern pat=Pattern.compile("(geturl)[\\s]+([.])+[\\s]+([.]+)");
-                	Matcher matcher = pat.matcher(str1);
-                	if (matcher.find()) {
-                		fullIdent=matcher.group(3);
-                	}
+                	String[] tokens = str1.split("[\\s]+");
+                	fullIdent=tokens[1];
                 	
                 	try {
                 		Node locNode=find_successor(HashFunc(fullIdent));
                     	if(locNode.getID()==me.getID()) {
-                    		
+                    		System.out.println("解析结果："+getUrl(fullIdent));
                     	}
                     	else {
-                    		System.out.println("[系统提示]: 解析url为 "+getUrl(fullIdent));
-                    		makeConnection(locNode.getIP(), locNode.getPort(), "geturl/"+fullIdent);
+                    		System.out.println("解析结果："+makeConnection(locNode.getIP(), locNode.getPort(), "geturl/"+fullIdent));
                     	}      
                 	}catch (Exception e) {}
                 }
                 else if(str1.startsWith("find")) {
                 	String[] tokens = str1.split("\\s+");
-                	System.out.print("[系统提示]: 此映射存储于节点"+HashFunc(tokens[1]));
+                	try {
+						System.out.println("[系统提示]: 此映射存储于节点"+find_successor((HashFunc(tokens[1]))).getID());
+					} catch (Exception e) {}
+                }
+                else if(str1.startsWith("printident")){
+                	printIdent();
                 }
                 else {
                 	System.out.print("命令格式不正确！请重新输入");
@@ -566,13 +566,19 @@ public class NodeDHT implements Runnable
     	String top=tokens[0];
     	String second=tokens[1];
     	Identification dest=new Identification(top, second);
-    	return IdentMap.get(dest);       
+    	if(IdentMap.containsKey(dest))
+    	    return IdentMap.get(dest); 
+    	else {
+    		return "无法解析";
+    	}
     }
     //向当前节点插入<Identification,url>键值对
     public static void InsertIdentification(String fullIdent, String url) throws Exception { 
     	String[] tokens = fullIdent.split("/");
     	String top=tokens[0];
     	String second=tokens[1];
+    	//System.out.println(top);
+    	//System.out.println(second);
     	int kid=HashFunc(fullIdent);//标识的哈希
     	Node temp=find_successor(kid);//应该存储的位置
     	if(temp.getID()==me.getID()) {
@@ -585,7 +591,9 @@ public class NodeDHT implements Runnable
     }
     //新增：将标识映射添加到本地
     public static void localInsert(String top ,String second,String url) {
-    	Identification newone= new Identification(top, second);
+    	Identification newone= new Identification(top, second); 
+    	//IdentificationList.add(newone);
+    	//System.out.println(newone.getToplevelIdent()+"/"+newone.getSecondaryIdent());
     	IdentMap.put(newone, url);
 		System.out.println("[系统提示]: 标识映射已存入节点"+me.getID());
     }
@@ -887,6 +895,17 @@ public class NodeDHT implements Runnable
     		System.out.println(string);
     	}
     }
+    //新增：打印映射
+    public static void printIdent() {
+    	Set<Entry<Identification,String>> ms =IdentMap.entrySet();
+    	System.out.println("******标识映射*****");
+    	int count=1;
+		for (Entry<Identification,String> entry : ms) {
+			System.out.println((count++)+"."+entry.getKey().getToplevelIdent()+"/"+entry.getKey().getSecondaryIdent()+"="+entry.getValue());
+		}
+    } 
+    //新增
+    
     //新增：删除节点
     public synchronized static void delete(Node node){
     	nodeList.remove(node);

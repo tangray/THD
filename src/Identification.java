@@ -2,19 +2,26 @@ public class Identification {
 	//private int myKey;
 	private String ToplevelIdent;
 	private String SecondaryIdent;
-
-	/*public void setKey (int key) {
-		this.myKey = key;
-	}*/
+    
+	@Override
+	public boolean equals(Object object) {
+		Identification temp=null;
+		if(object instanceof Identification)
+			temp= (Identification)object;
+		if(temp.getToplevelIdent().equals(ToplevelIdent)&&temp.getSecondaryIdent().equals(SecondaryIdent))
+			return true;
+		else return false;
+	}
+	@Override
+	public int hashCode() {
+		return this.ToplevelIdent.hashCode()+this.SecondaryIdent.hashCode();
+	}
 	public void setToplevelIdent (String ToplevelIdent) {
 		this.ToplevelIdent = ToplevelIdent;
 	}
 	public void setSecondaryIdent (String SecondaryIdent) {
 		this.SecondaryIdent = SecondaryIdent;
 	}
-	/*public int getKey() {
-		return this.myKey;
-	}*/
 	public String getToplevelIdent() {
 		return this.ToplevelIdent;
 	}
@@ -22,9 +29,8 @@ public class Identification {
 		return this.SecondaryIdent;
 	}
 	public Identification(String ToplevelIdent,String SecondaryIdent){
-		//myKey = key;
-		ToplevelIdent = this.ToplevelIdent;
-		SecondaryIdent = this.SecondaryIdent;
+		 this.ToplevelIdent =ToplevelIdent;
+		 this.SecondaryIdent = SecondaryIdent;
 	}
 }
 
