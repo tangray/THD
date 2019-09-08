@@ -390,8 +390,8 @@ public class NodeDHT implements Runnable
                 	Pattern pat=Pattern.compile("(insert)([\\s]+)([.]+)([\\s]+)([.]+)");
                 	Matcher matcher = pat.matcher(str1);
                 	if (matcher.find()) {
-                		fullIdent=matcher.group(1);
-                		url=matcher.group(2);
+                		fullIdent=matcher.group(3);
+                		url=matcher.group(5);
                 	}
                 	
                 	try {
@@ -403,7 +403,7 @@ public class NodeDHT implements Runnable
                 	Pattern pat=Pattern.compile("(geturl)[\\s]+([.])+[\\s]+([.]+)");
                 	Matcher matcher = pat.matcher(str1);
                 	if (matcher.find()) {
-                		fullIdent=matcher.group(1);
+                		fullIdent=matcher.group(3);
                 	}
                 	
                 	try {
