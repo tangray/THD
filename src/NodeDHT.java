@@ -302,7 +302,7 @@ public class NodeDHT implements Runnable
             }
             System.out.println("路由表创建完成，此节点是网络中唯一节点！");
             printFingerInfo();
-            System.out.println();
+            //System.out.println();
            
             try {
             	System.out.println("开始创建节点列表...");
@@ -414,6 +414,7 @@ public class NodeDHT implements Runnable
                 	String[] tokens = str1.split("\\s+");
                 	try {
 						System.out.println("[系统提示]: 此映射存储于节点"+find_successor((HashFunc(tokens[1]))).getID());
+						System.out.println();
 					} catch (Exception e) {}
                 }
                 else if(str1.startsWith("printident")){
@@ -585,6 +586,7 @@ public class NodeDHT implements Runnable
     	else {
     		makeConnection(temp.getIP(), temp.getPort(), "tryInsert/"+top+"/"+second+"/"+url);
     		System.out.println("[系统提示]: 标识映射已存入节点"+temp.getID());
+    		System.out.println();
     	}   	  
     }
     //新增：将标识映射添加到本地
@@ -594,12 +596,14 @@ public class NodeDHT implements Runnable
     	//System.out.println(newone.getToplevelIdent()+"/"+newone.getSecondaryIdent());
     	IdentMap.put(newone, url);
 		System.out.println("[系统提示]: 标识映射已存入节点"+me.getID());
+		System.out.println();
     }
     //新增：将标识映射添加到其它节点
     public static void tryInsert(String top,String second ,String url) {
     	Identification newone= new Identification(top, second);
     	IdentMap.put(newone, url);
     	System.out.println("[系统提示]: 有新标识映射存入本节点");
+    	System.out.println();
     }
     //初始化路由表
     public static void init_finger_table(Node n) throws Exception {
@@ -882,7 +886,6 @@ public class NodeDHT implements Runnable
     	for(int i=1;i<=m;i++) {
 		      System.out.println(results+"Index["+finger[i].getStart()+"]       "+"后继节点ID: "+finger[i].getSuccessor().getID());
 	     }
-    	System.out.println();
     }
     //新增：打印节点信息
     public synchronized static void printNodeInfo() throws Exception{
