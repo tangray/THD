@@ -220,7 +220,6 @@ public class NodeDHT implements Runnable
             BigInteger hashNum = new BigInteger(1,hashBytes);
 
             nodeID = Math.abs(hashNum.intValue()) % numDHT;
-            System.out.println("Generated ID: " + nodeID + " for requesting node");
 
             while(Integer.parseInt(makeConnection(knownhostIP, knownhostport, "findSucOfPred/"+nodeID))==nodeID) {
                 md.reset();
@@ -228,13 +227,12 @@ public class NodeDHT implements Runnable
                 hashBytes = md.digest();
                 hashNum = new BigInteger(1,hashBytes);
                 nodeID = Math.abs(hashNum.intValue()) % numDHT;  
-                System.out.println("ID Collision, new ID: " + nodeID);
             }
 
 
             if (Integer.parseInt(makeConnection(knownhostIP, knownhostport, "findSucOfPred/"+nodeID))!=nodeID) {
 
-                System.out.println("New node added ... ");
+                System.out.println("新节点加入... ");
             }
 
             initInfo = nodeID;
@@ -898,11 +896,12 @@ public class NodeDHT implements Runnable
     //新增：打印映射
     public static void printIdent() {
     	Set<Entry<Identification,String>> ms =IdentMap.entrySet();
-    	System.out.println("******标识映射*****");
+    	System.out.println("\n"+"******标识映射*****");
     	int count=1;
 		for (Entry<Identification,String> entry : ms) {
 			System.out.println((count++)+"."+entry.getKey().getToplevelIdent()+"/"+entry.getKey().getSecondaryIdent()+"="+entry.getValue());
 		}
+		System.out.println();
     } 
     //新增
     
