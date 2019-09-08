@@ -863,14 +863,17 @@ public class NodeDHT implements Runnable
     //新增：打印节点个数
     public static void printNum(){
     	System.out.println("当前节点个数 ："+nodeList.size()+"个");
+    	System.out.println();
     }
     //新增：打印前继
     public static void printPred() {
     	System.out.println("本节点的前继节点是 ："+pred.getID());
+    	System.out.println();
     }
     //新增：打印后继
     public static void printSuccessor() {
     	System.out.println("本节点的后继节点是 ："+finger[1].getSuccessor().getID());
+    	System.out.println();
     }
     //新增：打印路由表信息
     public static void printFingerInfo(){
@@ -879,6 +882,7 @@ public class NodeDHT implements Runnable
     	for(int i=1;i<=m;i++) {
 		      System.out.println(results+"Index["+finger[i].getStart()+"]       "+"后继节点ID: "+finger[i].getSuccessor().getID());
 	     }
+    	System.out.println();
     }
     //新增：打印节点信息
     public synchronized static void printNodeInfo() throws Exception{
@@ -892,11 +896,12 @@ public class NodeDHT implements Runnable
     		string="节点ID:"+node.getID()+"  IP地址："+node.getIP()+"  端口号： "+node.getPort()+" ";
     		System.out.println(string);
     	}
+    	System.out.println();
     }
     //新增：打印映射
     public static void printIdent() {
     	Set<Entry<Identification,String>> ms =IdentMap.entrySet();
-    	System.out.println("\n"+"******标识映射*****");
+    	System.out.println("******标识映射*****");
     	int count=1;
 		for (Entry<Identification,String> entry : ms) {
 			System.out.println((count++)+"."+entry.getKey().getToplevelIdent()+"/"+entry.getKey().getSecondaryIdent()+"="+entry.getValue());
