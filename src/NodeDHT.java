@@ -6,6 +6,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //
 //
@@ -383,16 +385,27 @@ public class NodeDHT implements Runnable
                 	printSuccessor();
                 }
                 else if(str1.startsWith("insert")) {
-                	String[] tokens = str1.split("\\s+");
-                	String fullIdent=tokens[1];
-                	String url=tokens[2];
+                	String fullIdent=null;
+                	String url=null;
+                	Pattern pat=Pattern.compile("(insert)([\\s]+)([.]+)([\\s]+)([.]+)");
+                	Matcher matcher = pat.matcher(str1);
+                	if (matcher.find()) {
+                		fullIdent=matcher.group(1);
+                		url=matcher.group(2);
+                	}
+                	
                 	try {
 						InsertIdentification(fullIdent, url);
 					} catch (Exception e) {}
                 }
                 else if(str1.startsWith("geturl")) {
-                	String[] tokens = str1.split("\\s+");
-                	String fullIdent=tokens[1];
+                	String fullIdent=null;
+                	Pattern pat=Pattern.compile("(geturl)[\\s]+([.])+[\\s]+([.]+)");
+                	Matcher matcher = pat.matcher(str1);
+                	if (matcher.find()) {
+                		fullIdent=matcher.group(1);
+                	}
+                	
                 	try {
                 		Node locNode=find_successor(HashFunc(fullIdent));
                     	if(locNode.getID()==me.getID()) {
@@ -484,19 +497,19 @@ public class NodeDHT implements Runnable
         //新添加
         else if (tokens[0].equals("quitOfTwoNodes")) {//只有两个节点的退出
         	delete(pred);//后继节点的列表中删除前继
+        	System.out.println("\n"+"[系统提示]: 节点 "+pred.getID()+"已经退出DHT网络");
         	setPredecessor(me);
         	for(int i=1;i<=m;i++) {
         		finger[i].setSuccessor(me);
-        	}
-        	System.out.println("\n"+"[系统提示]: 节点 "+pred.getID()+"已经退出DHT网络");
+        	}       	
         	printNum();
         }
         //新添加
         else if (tokens[0].equals("quitOfManyNodes")) {//多于两个节点时的退出
         	delete(pred);//后继节点的列表中删除前继
         	noticeOthers("deleteNodeOfNodelist/"+pred.getID()+"/"+pred.getIP()+"/"+pred.getPort()+"/"+me.getID()+"/"+me.getIP()+"/"+me.getPort()+"/"+pred.getID());//通知剩余节点删除其前继
-        	setPredecessor(new Node(Integer.parseInt(tokens[1]),tokens[2],tokens[3]));//将前继设为删除节点的前继
         	System.out.println("\n"+"[系统提示]: 节点 "+pred.getID()+"已经退出DHT网络");
+        	setPredecessor(new Node(Integer.parseInt(tokens[1]),tokens[2],tokens[3]));//将前继设为删除节点的前继
         	printNum();
         }
         //新添加
