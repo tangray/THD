@@ -329,7 +329,7 @@ public class NodeDHT implements Runnable
                     finger[i].setSuccessor(me);
             }
             System.out.println("空表创建完成....");
-            System.out.println();
+            //System.out.println();
             try{    
             	    System.out.println("开始初始化路由表.....");
                     init_finger_table(pred);
@@ -525,7 +525,7 @@ public class NodeDHT implements Runnable
             tryInsert(tokens[1], tokens[2], tokens[3]);
         }
         else if (tokens[0].equals("geturl")) {
-            outResponse=getUrl(tokens[1]);
+            outResponse=getUrl(tokens[1]+"/"+tokens[2]);
         }
         //新添加
         else if (tokens[0].equals("printNum")) {
