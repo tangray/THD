@@ -168,7 +168,7 @@ public class NodeDHT implements Runnable
     	System.out.println();
         System.out.println("[系统提示]:"+"节点 " +id + "已经在DHT网络中！.");
         printNodeInfo();
-        printNum();
+        //printNum();
         synchronized (object) {
             busy = 0;
         }
@@ -395,7 +395,7 @@ public class NodeDHT implements Runnable
 						} catch (Exception e) {}
 
                 }
-                else if(str1.startsWith("geturl")) {
+                else if(str1.startsWith("resolve")) {
                 	String fullIdent=null;
                 	String[] tokens = str1.split("[\\s]+");
                 	fullIdent=tokens[1];
