@@ -158,7 +158,7 @@ public class NodeDHT implements Runnable
     	System.out.println();
         System.out.println("[系统提示]:"+"节点 " +id + "已经在DHT网络中！.");
         printNodeInfo();
-        printNum();
+        //printNum();
         synchronized (object) {
             busy = 0;
         }
@@ -404,9 +404,11 @@ public class NodeDHT implements Runnable
                 		Node locNode=find_successor(HashFunc(fullIdent));
                     	if(locNode.getID()==me.getID()) {
                     		System.out.println("解析结果："+getUrl(fullIdent));
+                    		System.out.println();
                     	}
                     	else {
                     		System.out.println("解析结果："+makeConnection(locNode.getIP(), locNode.getPort(), "geturl/"+fullIdent));
+                    		System.out.println();
                     	}      
                 	}catch (Exception e) {}
                 }
@@ -603,6 +605,7 @@ public class NodeDHT implements Runnable
     	Identification newone= new Identification(top, second);
     	IdentMap.put(newone, url);
     	System.out.println("[系统提示]: 有新标识映射存入本节点");
+    	System.out.println(newone.getToplevelIdent()+"/"+newone.getSecondaryIdent()+"="+IdentMap.get(newone));
     	System.out.println();
     }
     //初始化路由表
